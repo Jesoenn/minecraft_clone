@@ -8,7 +8,12 @@ include_directories(include)
 # Link libraries
 link_directories(lib)
 
-add_executable(minecraft_clone main.cpp)
+add_executable(minecraft_clone main.cpp
+        src/glad.c
+        src/core/Application.cpp
+        src/core/Application.h
+        src/core/Window.cpp
+        src/core/Window.h)
 
 # Add DLLs (libraries)
 target_link_libraries(minecraft_clone
