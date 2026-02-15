@@ -6,6 +6,8 @@
 #define APPLICATION_H
 #include <memory>
 #include "Window.h"
+#include "../graphics/Renderer.h"
+
 
 
 class Application {
@@ -19,6 +21,7 @@ private:
 
     // Window
     std::shared_ptr<Window> window;
+    std::shared_ptr<Renderer> renderer;
     std::string windowTitle;
     bool lockedCursor, tabPressed;
 

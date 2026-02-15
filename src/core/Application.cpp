@@ -11,14 +11,19 @@ Application::Application(int width, int height, const std::string& title):
     windowTitle(title), lockedCursor(true), tabPressed(false) {
     createWindow(width, height, title);
 
+    // TODO: tmp
+    renderer = std::make_shared<Renderer>();
+
     // Create instances:
     // inputmanager - window reference
     // renderer - world reference, camera reference
-    // world - idk yet
+    // world - idk
 
 }
 
 void Application::run() {
+    // glEnable(GL_DEPTH_TEST);
+
     while (!window->shouldClose()) {
         calculateFPS();
 
@@ -28,8 +33,9 @@ void Application::run() {
         // update();
 
         // Rendering
-        // render();
+        renderer->render();
 
+        glfwSwapBuffers(window->getGLFWwindow());
         glfwPollEvents();
     }
 }

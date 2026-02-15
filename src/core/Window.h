@@ -32,7 +32,7 @@ private:
     int width, height;
     float lastMouseX, lastMouseY;
     std::string title;
-    GLFWwindow* window; // Pointer to GLFW window, so that we can call glfw functions on it
+    GLFWwindow* window; // GLFW window
 
     // Implemented callback functions. They have to be set by parent class.
     void setCallbacks();

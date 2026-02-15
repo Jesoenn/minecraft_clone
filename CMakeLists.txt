@@ -13,7 +13,13 @@ add_executable(minecraft_clone main.cpp
         src/core/Application.cpp
         src/core/Application.h
         src/core/Window.cpp
-        src/core/Window.h)
+        src/core/Window.h
+        src/graphics/Renderer.cpp
+        src/graphics/Renderer.h
+        src/graphics/Shader.cpp
+        src/graphics/Shader.h
+        src/world/Block.cpp
+        src/world/Block.h)
 
 # Add DLLs (libraries)
 target_link_libraries(minecraft_clone
