@@ -13,11 +13,15 @@
 class Window {
 public:
     Window(int width, int height, std::string title);
+    ~Window();
     void setUp();
 
     // Setters
     void setTitle(std::string title);
     void setSize(int width, int height);
+    void setMouseCallback(std::function<void(double, double)> func);
+    void setFrameBufferSizeCallback(std::function<void(int, int)> func);
+    void setScrollCallback(std::function<void(double, double)> func);
 
     // Getters
     GLFWwindow* getGLFWwindow();
@@ -26,14 +30,19 @@ public:
 
 private:
     int width, height;
+    float lastMouseX, lastMouseY;
     std::string title;
     GLFWwindow* window; // Pointer to GLFW window, so that we can call glfw functions on it
 
+    // Implemented callback functions. They have to be set by parent class.
     void setCallbacks();
+    std::function<void(double, double)> mouseCallbackFunc;
+    std::function<void(int, int)> frameBufferSizeCallbackFunc;
+    std::function<void(double, double)> scrollCallbackFunc;
 
+    // Static callbacks defined by GLFW. They call corresponding std::function callbacks.
     static void mouseCallback(GLFWwindow* window, double xpos, double ypos);
     static void frameBufferSizeCallback(GLFWwindow* window, int width, int height);
-    // void static processInput(GLFWwindow* window);
     static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 };
 

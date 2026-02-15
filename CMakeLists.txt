@@ -18,4 +18,5 @@ add_executable(minecraft_clone main.cpp
 # Add DLLs (libraries)
 target_link_libraries(minecraft_clone
         glfw3dll
+        opengl32
 )

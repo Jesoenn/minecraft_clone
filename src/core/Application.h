@@ -12,20 +12,24 @@ class Application {
 public:
     Application(int width, int height, const std::string& title);
     void run();
-
-    void mouseCallback(double xpos, double ypos);
-    void frameBufferSizeCallback(int width, int height);
-    void scrollCallback(double xoffset, double yoffset);
-    // TODO: input callback?
+    // TODO: InputManager
 private:
     // Timing (FPS)
     float deltaTime, lastFrame;
 
+    // Window
     std::shared_ptr<Window> window;
     std::string windowTitle;
+    bool lockedCursor, tabPressed;
 
     void createWindow(int width, int height, const std::string& title);
     void calculateFPS();
+
+    // Window callback functions
+    void mouseCallback(double xpos, double ypos);
+    void frameBufferSizeCallback(int width, int height);
+    void scrollCallback(double xoffset, double yoffset);
+    void processInput();
 };
 
 

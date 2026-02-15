@@ -8,11 +8,20 @@
 
 Window::Window(int width, int height, std::string title):
     width(width), height(height), title(title),
-    window(nullptr) {}
+    window(nullptr){
+
+    // Set initial mouse position to center of the window
+    lastMouseX = static_cast<float>(width)/2.0f;
+    lastMouseY = static_cast<float>(height)/2.0f;
+}
+
+Window::~Window() {
+    glfwDestroyWindow(window);
+    glfwTerminate();
+}
 
 /**
- * Initializes GLFW, creates a window, and sets up OpenGL context.
- * Also sets up callbacks for window resizing, scroll and mouse input.
+ * Initialize GLFW, create window, set up OpenGL context, callbacks for window resizing, scroll and mouse input.
  */
 void Window::setUp() {
     // Initialize GLFW and set OpenGL version to 3.3 core profile
@@ -40,26 +49,28 @@ void Window::setUp() {
     glViewport(0, 0, width, height);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Lock cursor to window
 
-    // Set up callbacks for window resizing, scroll and mouse input
     setCallbacks();
 }
 
 void Window::setCallbacks() {
-    glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback); // Changing window size
-    glfwSetCursorPosCallback(window, mouseCallback); // Moving/Pressing mouse
-    glfwSetScrollCallback(window, scrollCallback);  // Scroll callback
+    // Add new pointer to current class instance, so it can be referenced in static callback functions
+    glfwSetWindowUserPointer(window, this);
+
+    glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback);
+    glfwSetCursorPosCallback(window, mouseCallback);
+    glfwSetScrollCallback(window, scrollCallback);
 }
 
-void Window::mouseCallback(GLFWwindow *window, double xpos, double ypos) {
-
+void Window::setMouseCallback(std::function<void(double, double)> func) {
+    this->mouseCallbackFunc = std::move(func);
 }
 
-void Window::frameBufferSizeCallback(GLFWwindow *window, int width, int height) {
-
+void Window::setFrameBufferSizeCallback(std::function<void(int, int)> func) {
+    this->frameBufferSizeCallbackFunc = std::move(func);
 }
 
-void Window::scrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
-
+void Window::setScrollCallback(std::function<void(double, double)> func) {
+    this->scrollCallbackFunc = std::move(func);
 }
 
 void Window::setTitle(std::string title) {
@@ -83,4 +94,23 @@ glm::vec2 Window::getSize() {
 
 bool Window::shouldClose() {
     return glfwWindowShouldClose(window);
+}
+
+//
+// Static callback functions defined by GLFW.
+//
+
+void Window::mouseCallback(GLFWwindow *window, double xpos, double ypos) {
+    Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    win->mouseCallbackFunc(xpos, ypos);
+}
+
+void Window::frameBufferSizeCallback(GLFWwindow *window, int width, int height) {
+    Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    win->frameBufferSizeCallbackFunc(width, height);
+}
+
+void Window::scrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
+    Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    win->scrollCallbackFunc(xoffset, yoffset);
 }
