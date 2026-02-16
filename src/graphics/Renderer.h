@@ -7,13 +7,13 @@
 #include <memory>
 #include <vector>
 #include <GL/gl.h>
-
+#include "Camera.h"
 #include "Shader.h"
 
 
 class Renderer {
 public:
-    Renderer();
+    Renderer(Camera& camera);
 
     void render();
 
@@ -23,6 +23,8 @@ public:
     void setUpCubeCoords();
 
 private:
+    Camera camera;
+
     // TODO: tmp
     std::vector<glm::vec3> cubeCoords;
     GLuint cubeVAO, cubeVBO;

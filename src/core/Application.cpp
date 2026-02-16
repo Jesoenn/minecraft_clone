@@ -6,13 +6,16 @@
 #include "GLFW/glfw3.h"
 #include <iostream>
 
+#include "../graphics/Camera.h"
+
 Application::Application(int width, int height, const std::string& title):
     deltaTime(0.0f), lastFrame(0.0f),
     windowTitle(title), lockedCursor(true), tabPressed(false) {
     createWindow(width, height, title);
 
     // TODO: tmp
-    renderer = std::make_shared<Renderer>();
+    Camera camera;
+    renderer = std::make_shared<Renderer>(camera);
 
     // Create instances:
     // inputmanager - window reference
@@ -22,7 +25,7 @@ Application::Application(int width, int height, const std::string& title):
 }
 
 void Application::run() {
-    // glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
 
     while (!window->shouldClose()) {
         calculateFPS();

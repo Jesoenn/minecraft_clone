@@ -8,8 +8,8 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
 
-Renderer::Renderer():
-    cubeShader(nullptr) {
+Renderer::Renderer(Camera& camera):
+    cubeShader(nullptr), camera(camera) {
     setUpShaders();
     setUpCubes();
 }
@@ -20,9 +20,19 @@ void Renderer::render() {
     // How to draw blocks. (block.draw ?, or something better)
 
     glClearColor(0.3f, 0.3f, 0.5f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    camera.processMouseMovement(0,0);
 
     cubeShader->use();
+    glm::mat4 projection = glm::perspective(glm::radians(camera.fov), static_cast<float>(1600.0/900.0), 0.1f, 100.0f);
+    cubeShader->setMat4("view", camera.getViewMatrix());
+    cubeShader->setMat4("projection", projection);
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(1.0f, 0.0f, -5.0f));
+    cubeShader->setMat4("model", model);
+
+
     glBindVertexArray(cubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
@@ -90,7 +100,7 @@ void Renderer::setUpCubes() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     // Normals
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     // Unbind VAO
     glBindVertexArray(0);
 }
