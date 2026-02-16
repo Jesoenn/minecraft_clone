@@ -9,7 +9,8 @@
 ## Current features
 
 - **Rendering single blocks**
-- **Block texture system** – textures are loaded by the BlockTextureAtlas class. In the future this will be changed to single atlas texture for all blocks.
+- **AABB Collision detection** - sliding along walls (collision doesn't necessary stop movement). Gravity is not implemented yet.
+- **Textures** – textures are loaded by the BlockTextureAtlas class. In the future this will be changed to single atlas texture for all blocks.
 - **3D camera** – free movement around the scene.
 - **Shaders** - vertex and fragment shaders. Without lighting. 
 - **Input system** – handling by InputManager.
@@ -44,6 +45,7 @@
 ## Keybinds
 - **TAB** – toggle mouse cursor
 - **F1** – toggle wireframe mode
+- **F2** – toggle physics
 
 ## Images
 

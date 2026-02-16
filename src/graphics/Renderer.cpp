@@ -22,7 +22,6 @@ Renderer::Renderer(Camera& camera, World& world, glm::vec2 windowSize):
 }
 
 //TODO:
-// Add postprocessing - framebuffer
 // Kolizje, skakanie pod przycisk
 // CHUNKI
 

@@ -7,23 +7,25 @@
 #include <iostream>
 
 InputManager::InputManager(World &world, Window &window, Renderer &renderer):
+    lastX(0), lastY(0), firstMouse(true),
     world(world), window(window), renderer(renderer),
-    tabPressed(false), lockedCursor(true), f1Pressed(false),
-firstMouse(true), lastX(0), lastY(0){}
+    lockedCursor(true),
+    tabPressed(false), f1Pressed(false), f2Pressed(false){}
 
 void InputManager::mouseCallback(double xPosIn, double yPosIn) {
     float xPos = static_cast<float>(xPosIn);
     float yPos = static_cast<float>(yPosIn);
 
-    if (!lockedCursor)
-        return;
-
     // Calculate offset
-    if (firstMouse) {
+    if (firstMouse || !lockedCursor) {
         lastX = xPos;
         lastY = yPos;
         firstMouse = false;
     }
+
+    if (!lockedCursor)
+        return;
+
     float offsetX = xPos - lastX;
     float offsetY = lastY - yPos;
     lastX = xPos;
@@ -51,13 +53,22 @@ void InputManager::processInput(float deltaTime) {
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         world.processMovement(RIGHT, deltaTime);
 
-    //Wireframe toggle
+    // Wireframe toggle
     int f1State = glfwGetKey(window, GLFW_KEY_F1);
     if (f1State == GLFW_PRESS && !f1Pressed) {
         f1Pressed = true;
         renderer.toggleWireframe();
     } else if (f1State == GLFW_RELEASE && f1Pressed) {
         f1Pressed = false;
+    }
+
+    // Physics toggle
+    int f2State = glfwGetKey(window, GLFW_KEY_F2);
+    if (f2State == GLFW_PRESS && !f2Pressed) {
+        f2Pressed = true;
+        world.togglePhysics();
+    } else if (f2State == GLFW_RELEASE && f2Pressed) {
+        f2Pressed = false;
     }
 
     // Mouse lock toggle

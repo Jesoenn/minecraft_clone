@@ -29,7 +29,9 @@ add_executable(minecraft_clone main.cpp
         src/graphics/Texture.cpp
         src/graphics/Texture.h
         src/graphics/BlockTextureAtlas.cpp
-        src/graphics/BlockTextureAtlas.h)
+        src/graphics/BlockTextureAtlas.h
+        src/world/Player.cpp
+        src/world/Player.h)
 
 # Add DLLs (libraries)
 target_link_libraries(minecraft_clone
