@@ -23,7 +23,13 @@ add_executable(minecraft_clone main.cpp
         src/graphics/Camera.cpp
         src/graphics/Camera.h
         src/core/World.cpp
-        src/core/World.h)
+        src/core/World.h
+        src/core/InputManager.cpp
+        src/core/InputManager.h
+        src/graphics/Texture.cpp
+        src/graphics/Texture.h
+        src/graphics/BlockTextureAtlas.cpp
+        src/graphics/BlockTextureAtlas.h)
 
 # Add DLLs (libraries)
 target_link_libraries(minecraft_clone

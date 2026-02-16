@@ -10,22 +10,22 @@
 
 enum class BlockType {
     AIR,
-    DIRT
+    DIRT,
+    GRASS_BLOCK
 };
 
 class Block {
 public:
-    Block(BlockType type);
-
-    // Getters
-    BlockType getType();
+    explicit Block(BlockType type);
 
     // Setters
     void setType(BlockType type);
 
+    // Getters
+    BlockType getType() const;
+
 private:
     BlockType type;
-
 
 };
 

@@ -5,6 +5,8 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 #include <memory>
+
+#include "InputManager.h"
 #include "Window.h"
 #include "../graphics/Renderer.h"
 
@@ -19,20 +21,22 @@ private:
     // Timing (FPS)
     float deltaTime, lastFrame;
 
+    // Game
+    std::shared_ptr<Renderer> renderer;
+    std::shared_ptr<World> world;
+    std::shared_ptr<InputManager> input;
+
     // Window
     std::shared_ptr<Window> window;
-    std::shared_ptr<Renderer> renderer;
     std::string windowTitle;
-    bool lockedCursor, tabPressed;
 
     void createWindow(int width, int height, const std::string& title);
     void calculateFPS();
 
     // Window callback functions
-    void mouseCallback(double xpos, double ypos);
-    void frameBufferSizeCallback(int width, int height);
-    void scrollCallback(double xoffset, double yoffset);
-    void processInput();
+    void mouseCallback(double xPos, double yPos);
+    void scrollCallback(double xOffset, double yOffset);
+    void framebufferSizeCallback(int width, int height);
 };
 
 

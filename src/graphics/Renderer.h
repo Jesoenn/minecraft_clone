@@ -7,29 +7,41 @@
 #include <memory>
 #include <vector>
 #include <GL/gl.h>
+
+#include "BlockTextureAtlas.h"
 #include "Camera.h"
 #include "Shader.h"
+#include "Texture.h"
+#include "../core/World.h"
 
 
 class Renderer {
 public:
-    Renderer(Camera& camera);
+    Renderer(Camera& camera, World& world, glm::vec2 windowSize);
 
     void render();
+    void toggleWireframe();
 
-    // TODO: tmp, move to chunks
+    // Set up
     void setUpShaders();
-    void setUpCubes();
-    void setUpCubeCoords();
+    void setUpTextures();
+    void setUpCube();
+
+    // Setters
+    void setWindowSize(glm::vec2 windowSize);
 
 private:
-    Camera camera;
+    bool wireFrameMode;
 
-    // TODO: tmp
-    std::vector<glm::vec3> cubeCoords;
-    GLuint cubeVAO, cubeVBO;
+    Camera& camera;
+    World& world;
+    BlockTextureAtlas blockTextureAtlas;
+
+    glm::vec2 windowSize;
+
+    // Visual
+    GLuint cubeVAO, cubeVBO, cubeEBO;
     std::shared_ptr<Shader> cubeShader;
-
 };
 
 

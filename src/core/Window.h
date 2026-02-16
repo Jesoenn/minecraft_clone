@@ -20,8 +20,8 @@ public:
     void setTitle(std::string title);
     void setSize(int width, int height);
     void setMouseCallback(std::function<void(double, double)> func);
-    void setFrameBufferSizeCallback(std::function<void(int, int)> func);
     void setScrollCallback(std::function<void(double, double)> func);
+    void setFrameBufferSizeCallback(std::function<void(int, int)> func);
 
     // Getters
     GLFWwindow* getGLFWwindow();
@@ -37,8 +37,8 @@ private:
     // Implemented callback functions. They have to be set by parent class.
     void setCallbacks();
     std::function<void(double, double)> mouseCallbackFunc;
-    std::function<void(int, int)> frameBufferSizeCallbackFunc;
     std::function<void(double, double)> scrollCallbackFunc;
+    std::function<void(int, int)> frameBufferSizeCallbackFunc;
 
     // Static callbacks defined by GLFW. They call corresponding std::function callbacks.
     static void mouseCallback(GLFWwindow* window, double xpos, double ypos);

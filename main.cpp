@@ -3,6 +3,10 @@
 #include "src/core/Application.h"
 
 int main() {
+    std::cout<<"SHORTCUTS\n"
+               "\tTAB - Toggle cursor lock\n"
+               "\tF1 - Toggle wireframe mode\n";
+
     // Create and run game application
     Application app(1600, 900, "Minecraft Clone");
     app.run();

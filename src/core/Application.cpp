@@ -10,12 +10,13 @@
 
 Application::Application(int width, int height, const std::string& title):
     deltaTime(0.0f), lastFrame(0.0f),
-    windowTitle(title), lockedCursor(true), tabPressed(false) {
+    windowTitle(title) {
     createWindow(width, height, title);
 
-    // TODO: tmp
-    Camera camera;
-    renderer = std::make_shared<Renderer>(camera);
+    // Game objects
+    world = std::make_shared<World>();
+    renderer = std::make_shared<Renderer>(world->getCamera(), *world, window->getSize());
+    input = std::make_shared<InputManager>(*world, *window, *renderer);
 
     // Create instances:
     // inputmanager - window reference
@@ -25,12 +26,9 @@ Application::Application(int width, int height, const std::string& title):
 }
 
 void Application::run() {
-    glEnable(GL_DEPTH_TEST);
-
     while (!window->shouldClose()) {
         calculateFPS();
-
-        processInput();
+        input->processInput(deltaTime);
 
         // Update game state
         // update();
@@ -48,55 +46,34 @@ void Application::createWindow(int width, int height, const std::string& title) 
     window->setUp();
 
     // Set static GLFW callbacks to class functions
-    window->setMouseCallback([this](double xpos, double ypos) {
-        this->mouseCallback(xpos, ypos);
+    window->setMouseCallback([this](double xPos, double yPos) {
+        this->mouseCallback(xPos, yPos);
+    });
+    window->setScrollCallback([this](double xOffset, double yOffset) {
+        this->scrollCallback(xOffset, yOffset);
     });
     window->setFrameBufferSizeCallback([this](int width, int height) {
-        this->frameBufferSizeCallback(width, height);
-    });
-    window->setScrollCallback([this](double xoffset, double yoffset) {
-        this->scrollCallback(xoffset, yoffset);
+        this->framebufferSizeCallback(width, height);
     });
 
 }
 
 void Application::calculateFPS() {
-    float currentFrame = glfwGetTime();
+    auto currentFrame = static_cast<float>(glfwGetTime());
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
     int fps = static_cast<int>(1.0f / deltaTime);
     glfwSetWindowTitle(window->getGLFWwindow(), (windowTitle + " - FPS: " + std::to_string(fps)).c_str());
 }
 
-// TODO: temp function, will be moved to Input
 void Application::mouseCallback(double xpos, double ypos) {
-    std::cout<<"Mouse callback: " << xpos << ", " << ypos << std::endl;
+    input->mouseCallback(xpos, ypos);
 }
 
-// TODO: temp function, will be moved to Input
-void Application::frameBufferSizeCallback(int width, int height) {
-    std::cout << "Framebuffer size: " << width << ", " << height << std::endl;
+void Application::scrollCallback(double xOffset, double yOffset) {
+    input->scrollCallback(xOffset, yOffset);
 }
 
-// TODO: temp function, will be moved to Input
-void Application::scrollCallback(double xoffset, double yoffset) {
-    std::cout << "Scroll callback: " << xoffset << ", " << yoffset << std::endl;
-}
-
-// TODO: temp function, will be moved to Input
-void Application::processInput() {
-    GLFWwindow* window = this->window->getGLFWwindow();
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-    }
-
-    // Mouse lock toggle
-    int tabState = glfwGetKey(window, GLFW_KEY_TAB);
-    if (tabState == GLFW_PRESS && !tabPressed) {
-        tabPressed = true;
-        lockedCursor = !lockedCursor;
-        glfwSetInputMode(window, GLFW_CURSOR, lockedCursor ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
-    } else if (tabState == GLFW_RELEASE && tabPressed) {
-        tabPressed = false;
-    }
+void Application::framebufferSizeCallback(int width, int height) {
+    renderer->setWindowSize(glm::vec2(width, height));
 }

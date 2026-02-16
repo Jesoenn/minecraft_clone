@@ -65,12 +65,12 @@ void Window::setMouseCallback(std::function<void(double, double)> func) {
     this->mouseCallbackFunc = std::move(func);
 }
 
-void Window::setFrameBufferSizeCallback(std::function<void(int, int)> func) {
-    this->frameBufferSizeCallbackFunc = std::move(func);
-}
-
 void Window::setScrollCallback(std::function<void(double, double)> func) {
     this->scrollCallbackFunc = std::move(func);
+}
+
+void Window::setFrameBufferSizeCallback(std::function<void(int, int)> func) {
+    this->frameBufferSizeCallbackFunc = std::move(func);
 }
 
 void Window::setTitle(std::string title) {
@@ -89,7 +89,7 @@ GLFWwindow* Window::getGLFWwindow() {
 }
 
 glm::vec2 Window::getSize() {
-    return {width, height};
+    return {static_cast<float>(width), static_cast<float>(height)};
 }
 
 bool Window::shouldClose() {
@@ -106,7 +106,12 @@ void Window::mouseCallback(GLFWwindow *window, double xpos, double ypos) {
 }
 
 void Window::frameBufferSizeCallback(GLFWwindow *window, int width, int height) {
+    glViewport(0, 0, width, height);
+
     Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    win->width = width;
+    win->height = height;
+
     win->frameBufferSizeCallbackFunc(width, height);
 }
 
