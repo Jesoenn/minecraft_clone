@@ -31,7 +31,7 @@ void Application::run() {
         input->processInput(deltaTime);
 
         // Update game state
-        // update();
+        world->updatePhysics(deltaTime);
 
         // Rendering
         renderer->render();

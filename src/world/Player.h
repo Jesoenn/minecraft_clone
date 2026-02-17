@@ -19,17 +19,24 @@ public:
     // Setters
     void setPosition(const glm::vec3& newPosition);
     void setPosition(float x, float y, float z);
+    void setVelocity(const glm::vec3& newVelocity);
+    void setVelocity(float x, float y, float z);
+    void setOnGround(bool onGround);
 
     // Getters
     glm::vec3 getPosition() const;
     glm::vec3 getSize() const;
+    glm::vec3 getVelocity() const;
     float getWidth() const;
     float getHeight() const;
     float getDepth() const;
     float getEyeHeight() const;
+    bool isOnGround() const;
+
 
 private:
-    glm::vec3 position;
+    glm::vec3 position, velocity;
+    bool onGround;
     float width, height, depth, eyeHeight;
 
 };

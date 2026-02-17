@@ -27,6 +27,12 @@ void World::setUp() {
             }
         }
     }
+    // 1 block above plane
+    blockPositions.emplace_back(6.f, 0.f, 6.f);
+    blocks.emplace_back(BlockType::GRASS_BLOCK);
+    // Ceiling
+    blockPositions.emplace_back(10.f, 2.f, 4.f);
+    blocks.emplace_back(BlockType::DIRT);
 
     blockPositions.emplace_back(0.f, 1.f, -2.f);
     blocks.emplace_back(BlockType::GRASS_BLOCK);
@@ -41,9 +47,16 @@ void World::setUp() {
     blocks.emplace_back(BlockType::DIRT);
 }
 
+void World::updatePhysics(const float deltaTime) {
+    if (!physicsEnabled) {
+        return;
+    }
+
+    jumpPhysics(deltaTime);
+}
+
 void World::processMovement(CameraMovement direction, float deltaTime) {
     //TODO: CHECK COLLISIONS BY CHUNK
-
     if (!physicsEnabled) {
         camera.processInput(direction, deltaTime);
 
@@ -53,12 +66,17 @@ void World::processMovement(CameraMovement direction, float deltaTime) {
     }
 
     // Movement direction vector
-    glm::vec3 moveDir(0.0f);
+    glm::vec3 moveDir = -glm::normalize(glm::cross(camera.right, camera.worldUp)); // Front without Y axis
     switch (direction) {
-        case FORWARD: moveDir = camera.front; break;
-        case BACKWARD: moveDir = -camera.front; break;
+        case FORWARD: break;
+        case BACKWARD: moveDir *= -1; break;
         case LEFT: moveDir = -camera.right; break;
         case RIGHT: moveDir = camera.right; break;
+        case JUMP:
+            if (player.isOnGround()) {
+                player.setVelocity(glm::vec3(0.0f, JUMP_FORCE, 0.0f));
+            }
+            return;
     }
 
     float velocity = camera.movementSpeed * deltaTime;
@@ -91,9 +109,49 @@ void World::processMovement(CameraMovement direction, float deltaTime) {
     camera.position.y = currentPos.y + player.getEyeHeight() - player.getHeight() / 2.0f;
 }
 
+void World::jumpPhysics(float deltaTime) {
+    glm::vec3 velocity = player.getVelocity();
+
+    // If player is not jumping - check if walked of a block
+    if (player.isOnGround() && velocity.y == 0.0f)
+        calcPlayerOnGround();
+
+    // Check if player just jumped
+    if (velocity.y != 0.0f && player.isOnGround()) {
+        player.setOnGround(false);
+    }
+    // If not jumping or falling
+    else if (velocity.y == 0.0f && player.isOnGround()) {
+        return;
+    }
+
+    // Apply gravity
+    velocity.y -= GRAVITY * deltaTime;
+    // Limit max falling speed
+    if (velocity.y < -MAX_Y_VELOCITY) {
+        velocity.y = -MAX_Y_VELOCITY;
+    }
+
+    glm::vec3 newPos = player.getPosition() + velocity * deltaTime;
+    if (checkCollision(newPos)) {
+        // If player was falling (collision from below), he is on the ground
+        if (velocity.y < 0 ) {
+            player.setOnGround(true);
+        }
+        velocity.y = 0;
+    } else {
+        player.setPosition(newPos.x, newPos.y, newPos.z);
+        camera.position.x = newPos.x;
+        camera.position.z = newPos.z;
+        camera.position.y = newPos.y + player.getEyeHeight() - player.getHeight() / 2.0f;
+    }
+    // calcPlayerOnGround();
+    player.setVelocity(velocity);
+}
 
 
 bool World::checkCollision(const glm::vec3 newPos) {
+    // TODO check by chunk and in radius - for example 3
     for (glm::vec3 &block : blockPositions) {
         float distance = glm::length(block - player.getPosition());
         if (distance > 3.8f) {
@@ -113,6 +171,16 @@ bool World::checkCollision(const glm::vec3 newPos) {
     return false;
 }
 
+void World::calcPlayerOnGround() {
+    glm::vec3 newPos = player.getPosition();
+    newPos.y -=  0.01f; // Check slightly below the player
+    if (!checkCollision(newPos)) {
+        player.setOnGround(false);
+    } else {
+        player.setOnGround(true);
+    }
+}
+
 void World::processMouseMovement(const float xOffset, const float yOffset) {
     camera.processMouseMovement(xOffset, yOffset);
 }
@@ -126,6 +194,7 @@ void World::togglePhysics() {
     if (physicsEnabled) {
         std::cout << "Physics enabled" << std::endl;
     } else {
+        player.setVelocity(glm::vec3(0));
         std::cout << "Physics disabled" << std::endl;
     }
 }

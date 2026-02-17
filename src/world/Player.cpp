@@ -4,7 +4,9 @@
 
 #include "Player.h"
 
-Player::Player(float cameraY) {
+Player::Player(float cameraY):
+    position(glm::vec3(0)), velocity(glm::vec3(0)), onGround(false),
+    width(0), height(0), depth(0), eyeHeight(0) {
     setUpHitBox(cameraY);
 }
 
@@ -25,6 +27,23 @@ void Player::setPosition(const glm::vec3 &newPosition) {
 void Player::setPosition(float x, float y, float z) {
     position = glm::vec3(x, y, z);
 }
+
+void Player::setVelocity(const glm::vec3 &newVelocity) {
+    velocity = newVelocity;
+}
+
+void Player::setVelocity(float x, float y, float z) {
+    velocity = glm::vec3(x, y, z);
+}
+
+void Player::setOnGround(bool onGround) {
+    this->onGround = onGround;
+}
+
+glm::vec3 Player::getVelocity() const {
+    return velocity;
+}
+
 
 glm::vec3 Player::getPosition() const {
     return position;
@@ -48,4 +67,8 @@ float Player::getDepth() const {
 
 float Player::getEyeHeight() const {
     return eyeHeight;
+}
+
+bool Player::isOnGround() const {
+    return onGround;
 }

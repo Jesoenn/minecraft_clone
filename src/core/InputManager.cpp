@@ -52,6 +52,8 @@ void InputManager::processInput(float deltaTime) {
         world.processMovement(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         world.processMovement(RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        world.processMovement(JUMP, deltaTime);
 
     // Wireframe toggle
     int f1State = glfwGetKey(window, GLFW_KEY_F1);

@@ -16,10 +16,10 @@ constexpr glm::vec3 DEFAULT_WORLD_UP = glm::vec3(0.f, 1.f, 0.f);
 constexpr float DEFAULT_FOV = 45.f;
 constexpr float DEFAULT_PITCH = 0.f;
 constexpr float DEFAULT_YAW = -90.f;
-constexpr float DEFAULT_MOVEMENT_SPEED = 10.0f;
+constexpr float DEFAULT_MOVEMENT_SPEED = 6.0f;
 constexpr float DEFAULT_MOUSE_SENSITIVITY = 0.1f;
 
-enum CameraMovement { FORWARD, BACKWARD, LEFT, RIGHT };
+enum CameraMovement { FORWARD, BACKWARD, LEFT, RIGHT, JUMP };
 
 class Camera {
 public:

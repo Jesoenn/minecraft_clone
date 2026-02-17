@@ -8,6 +8,9 @@
 #include "../world/Block.h"
 #include "../world/Player.h"
 
+constexpr float GRAVITY = 25.f;
+constexpr float JUMP_FORCE = 8.4f;
+constexpr float MAX_Y_VELOCITY = 25.f;
 
 class World {
 public:
@@ -19,6 +22,7 @@ public:
     void processMouseMovement(float xOffset, float yOffset);
     void processScroll(double yOffset);
 
+    void updatePhysics(float deltaTime);
     void togglePhysics();
 
     //Setters
@@ -37,7 +41,10 @@ private:
 
     bool physicsEnabled;
 
+    void jumpPhysics(float deltaTime);
+
     bool checkCollision(glm::vec3 newPos);
+    void calcPlayerOnGround();
 };
 
 
