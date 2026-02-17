@@ -16,7 +16,7 @@
 - **Input system** – handling by InputManager.
 - **Game window** – window and OpenGL context management via the Window class.
 - **Face culling** - only visible faces of blocks are rendered.
-- **Gravity** - ability to jump and fall down. Collision detection from below (landing), above (while jumping) and walking of the cliff.
+- **Gravity** - ability to jump and fall down. Collision detection from below (while jumping), above (landing) and walking off the cliff.
 
 ## Future features
 - **Chunk based rendering**
