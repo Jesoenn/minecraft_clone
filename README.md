@@ -62,4 +62,5 @@
 
 
 ![](resources/screenshots/gravity.gif)
+
 <i>17.02.2026 – gravity</i>
