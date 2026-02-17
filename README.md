@@ -60,3 +60,7 @@
 <img src="resources/screenshots/16_02_wireframe.png" alt="Block rendering" width="400"/>
 
 <i>16.02.2026 – wireframe mode</i>
+
+
+![](resources/screenshots/gravity.gif)
+<i>17.02.2026 – gravity</i>
