@@ -1,6 +1,6 @@
 # Minecraft Clone
 
-#### Date: 16.02.2026
+#### Date: 17.02.2026
 
 ## Description
 
@@ -19,7 +19,6 @@
 - **Gravity** - ability to jump and fall down. Collision detection from below (landing), above (while jumping) and walking of the cliff.
 
 ## Future features
-- **Toggle physics**
 - **Chunk based rendering**
 - **Rendering only visible block faces** - touching block faces are not rendered.
 - **Lighting**
