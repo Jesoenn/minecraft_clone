@@ -1,6 +1,6 @@
 # Minecraft Clone
 
-#### Date: 16.02.2026
+#### Date: 17.02.2026
 
 ## Description
 
@@ -16,10 +16,9 @@
 - **Input system** – handling by InputManager.
 - **Game window** – window and OpenGL context management via the Window class.
 - **Face culling** - only visible faces of blocks are rendered.
-- **Gravity** - ability to jump and fall down. Collision detection from below (landing), above (while jumping) and walking of the cliff.
+- **Gravity** - ability to jump and fall down. Collision detection from below (while jumping), above (landing) and walking off the cliff.
 
 ## Future features
-- **Toggle physics**
 - **Chunk based rendering**
 - **Rendering only visible block faces** - touching block faces are not rendered.
 - **Lighting**
@@ -63,4 +62,5 @@
 
 
 ![](resources/screenshots/gravity.gif)
+
 <i>17.02.2026 – gravity</i>
