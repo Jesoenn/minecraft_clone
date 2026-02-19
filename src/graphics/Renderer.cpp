@@ -32,7 +32,7 @@ void Renderer::render() {
 
     // Set shader uniforms
     cubeShader->use();
-    glm::mat4 projection = glm::perspective(glm::radians(camera.fov), windowSize.x/windowSize.y, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(camera.fov), windowSize.x/windowSize.y, 0.1f, 1000.0f);
     cubeShader->setMat4("projection", projection);
     cubeShader->setMat4("view", camera.getViewMatrix());
 

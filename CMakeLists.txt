@@ -31,7 +31,11 @@ add_executable(minecraft_clone main.cpp
         src/graphics/BlockTextureAtlas.cpp
         src/graphics/BlockTextureAtlas.h
         src/world/Player.cpp
-        src/world/Player.h)
+        src/world/Player.h
+        src/world/chunks/Chunk.cpp
+        src/world/chunks/Chunk.h
+        src/world/chunks/ChunkManager.cpp
+        src/world/chunks/ChunkManager.h)
 
 # Add DLLs (libraries)
 target_link_libraries(minecraft_clone

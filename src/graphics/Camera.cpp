@@ -6,11 +6,11 @@
 
 Camera::Camera():
     position(DEFAULT_POS), front(DEFAULT_POS), up(DEFAULT_UP), right(DEFAULT_RIGHT), worldUp(DEFAULT_WORLD_UP),
-    yaw(DEFAULT_YAW), pitch(DEFAULT_PITCH), fov(DEFAULT_FOV), movementSpeed(DEFAULT_MOVEMENT_SPEED), mouseSensitivity(DEFAULT_MOUSE_SENSITIVITY){}
+    yaw(DEFAULT_YAW), pitch(DEFAULT_PITCH), fov(DEFAULT_FOV), movementSpeed(DEFAULT_FLYING_SPEED), mouseSensitivity(DEFAULT_MOUSE_SENSITIVITY){}
 
 Camera::Camera(glm::vec3 pos):
     position(pos), front(DEFAULT_POS), up(DEFAULT_UP), right(DEFAULT_RIGHT), worldUp(DEFAULT_WORLD_UP),
-    yaw(DEFAULT_YAW), pitch(DEFAULT_PITCH), fov(DEFAULT_FOV), movementSpeed(DEFAULT_MOVEMENT_SPEED), mouseSensitivity(DEFAULT_MOUSE_SENSITIVITY){}
+    yaw(DEFAULT_YAW), pitch(DEFAULT_PITCH), fov(DEFAULT_FOV), movementSpeed(DEFAULT_FLYING_SPEED), mouseSensitivity(DEFAULT_MOUSE_SENSITIVITY){}
 
 void Camera::processInput(CameraMovement direction, float deltaTime) {
     float velocity = movementSpeed * deltaTime;
@@ -43,6 +43,14 @@ void Camera::processMouseMovement(float xOffset, float yOffset) {
         pitch = -89.0f;
 
     updateCameraVectors();
+}
+
+void Camera::setWalkingSpeed() {
+    movementSpeed = DEFAULT_MOVEMENT_SPEED;
+}
+
+void Camera::setFlyingSpeed() {
+    movementSpeed = DEFAULT_FLYING_SPEED;
 }
 
 glm::mat4 Camera::getViewMatrix() const {

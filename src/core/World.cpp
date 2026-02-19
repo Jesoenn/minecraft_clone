@@ -192,9 +192,11 @@ void World::processScroll(const double yOffset) {
 void World::togglePhysics() {
     physicsEnabled = !physicsEnabled;
     if (physicsEnabled) {
+        camera.setWalkingSpeed();
         std::cout << "Physics enabled" << std::endl;
     } else {
         player.setVelocity(glm::vec3(0));
+        camera.setFlyingSpeed();
         std::cout << "Physics disabled" << std::endl;
     }
 }
