@@ -13,11 +13,12 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "../core/World.h"
+#include "../world/chunks/ChunkManager.h"
 
 
 class Renderer {
 public:
-    Renderer(Camera& camera, World& world, glm::vec2 windowSize);
+    Renderer(Camera& camera, World& world, glm::vec2 windowSize, ChunkManager& chunkManager);
 
     void render();
     void toggleWireframe();
@@ -35,6 +36,7 @@ private:
 
     Camera& camera;
     World& world;
+    ChunkManager& chunkManager;
     BlockTextureAtlas blockTextureAtlas;
 
     glm::vec2 windowSize;

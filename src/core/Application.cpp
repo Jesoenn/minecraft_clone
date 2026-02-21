@@ -14,9 +14,11 @@ Application::Application(int width, int height, const std::string& title):
     createWindow(width, height, title);
 
     // Game objects
+    chunkManager = std::make_shared<ChunkManager>();
     world = std::make_shared<World>();
-    renderer = std::make_shared<Renderer>(world->getCamera(), *world, window->getSize());
+    renderer = std::make_shared<Renderer>(world->getCamera(), *world, window->getSize(), *chunkManager);
     input = std::make_shared<InputManager>(*world, *window, *renderer);
+
 
     // Create instances:
     // inputmanager - window reference

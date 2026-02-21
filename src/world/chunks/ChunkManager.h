@@ -11,13 +11,14 @@
 
 
 class ChunkManager {
-
-    //TODO void loadChunk(glm::vec3 pos); // Load chunk when perlin noise added
-    Chunk& getChunk(glm::ivec3 pos);
+    ChunkManager();
+    //TODO void loadChunk(glm::ivec2 pos); // Load chunk when perlin noise added
+    Chunk& getChunk(glm::ivec2 pos);
+    Chunk& getChunk(glm::vec3 pos);
+    std::map<glm::ivec2, Chunk>& getAllChunks();
 
 private:
-    std::map<glm::ivec3, Chunk> chunks;
-
+    std::map<glm::ivec2, Chunk> chunks;
 
 };
 

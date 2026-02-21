@@ -8,9 +8,9 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
 
-Renderer::Renderer(Camera& camera, World& world, glm::vec2 windowSize):
+Renderer::Renderer(Camera& camera, World& world, glm::vec2 windowSize, ChunkManager& chunkManager):
     wireFrameMode(false),
-    camera(camera), world(world), windowSize(windowSize),
+    camera(camera), world(world), chunkManager(chunkManager), windowSize(windowSize),
     cubeVAO(0), cubeVBO(0), cubeShader(nullptr) {
 
     glEnable(GL_DEPTH_TEST);
@@ -21,14 +21,11 @@ Renderer::Renderer(Camera& camera, World& world, glm::vec2 windowSize):
     setUpCube();
 }
 
-//TODO:
-// Kolizje, skakanie pod przycisk
-// CHUNKI
-
-
 void Renderer::render() {
     glClearColor(0.3f, 0.3f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // TODO RENDER CHUNKS - get chunks from chunkManager and render them
 
     // Set shader uniforms
     cubeShader->use();

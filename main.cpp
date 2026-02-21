@@ -2,8 +2,8 @@
 
 #include "src/core/Application.h"
 
-int main() {
 
+int main() {
     std::cout<<"SHORTCUTS\n"
                "\tTAB - Toggle cursor lock\n"
                "\tF1 - Toggle wireframe mode\n"
