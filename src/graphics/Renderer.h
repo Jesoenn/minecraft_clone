@@ -44,6 +44,7 @@ private:
     // Visual
     GLuint cubeVAO, cubeVBO, cubeEBO;
     std::shared_ptr<Shader> cubeShader;
+    std::shared_ptr<Shader> chunkShader;
 };
 
 

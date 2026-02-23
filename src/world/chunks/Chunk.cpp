@@ -109,6 +109,7 @@ bool Chunk::isAir(int x, int y, int z) {
            blocks[x][y][z] == BlockType::AIR;
 }
 
+// TODO THERE IS ONLY 4 VERTICES AND I NEED 6 FOR 2 TRIANGLES
 void Chunk::addFace(FaceDirection direction, int x, int y, int z) {
     std::vector<Vertex> vertices;
     if ( direction == FaceDirection::BACK)  {

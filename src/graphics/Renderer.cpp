@@ -26,28 +26,44 @@ void Renderer::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // TODO RENDER CHUNKS - get chunks from chunkManager and render them
+    // TODO CREATE TEMPORARY NEW RENDER METHOD BASED ON CHUNK.CPP TODO
+    // glm::ivec2 test = chunkManager.getChunk({0, 0}).getPosition();
+    // std::cout<< "Chunk position: " << test.x << ", " << test.y << std::endl;
 
-    // Set shader uniforms
-    cubeShader->use();
+    chunkShader->use();
     glm::mat4 projection = glm::perspective(glm::radians(camera.fov), windowSize.x/windowSize.y, 0.1f, 1000.0f);
-    cubeShader->setMat4("projection", projection);
-    cubeShader->setMat4("view", camera.getViewMatrix());
+    chunkShader->setMat4("projection", projection);
+    chunkShader->setMat4("view", camera.getViewMatrix());
+    glm::mat4 model = glm::mat4(1.0f);
+    chunkShader->setMat4("model", model);
 
-    glm::mat4 model;
-    std::vector<glm::vec3> cubes = world.getBlockPositions();
-    for (int i=0; i<cubes.size(); i++) {
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, cubes[i]);
-        cubeShader->setMat4("model", model);
+    glm::vec3 chunkPos = glm::vec3(0, 0, 0);
+    chunkShader->setVec3("chunkOffset", chunkPos);
 
-        blockTextureAtlas.activateTexture(world.getBlockType(i), 0, 1, 2);
-        cubeShader->setInt("side_texture", 0);
-        cubeShader->setInt("top_texture", 1);
-        cubeShader->setInt("bottom_texture", 2);
 
-        glBindVertexArray(cubeVAO);
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-    }
+    chunkManager.getChunk({0, 0}).render();
+
+    // // Set shader uniforms
+    // cubeShader->use();
+    // glm::mat4 projection = glm::perspective(glm::radians(camera.fov), windowSize.x/windowSize.y, 0.1f, 1000.0f);
+    // cubeShader->setMat4("projection", projection);
+    // cubeShader->setMat4("view", camera.getViewMatrix());
+    //
+    // glm::mat4 model;
+    // std::vector<glm::vec3> cubes = world.getBlockPositions();
+    // for (int i=0; i<cubes.size(); i++) {
+    //     model = glm::mat4(1.0f);
+    //     model = glm::translate(model, cubes[i]);
+    //     cubeShader->setMat4("model", model);
+    //
+    //     blockTextureAtlas.activateTexture(world.getBlockType(i), 0, 1, 2);
+    //     cubeShader->setInt("side_texture", 0);
+    //     cubeShader->setInt("top_texture", 1);
+    //     cubeShader->setInt("bottom_texture", 2);
+    //
+    //     glBindVertexArray(cubeVAO);
+    //     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+    // }
 }
 
 void Renderer::toggleWireframe() {
@@ -66,6 +82,7 @@ void Renderer::setWindowSize(glm::vec2 windowSize) {
 
 void Renderer::setUpShaders() {
     cubeShader = std::make_shared<Shader>("../src/graphics/shaders/cube.vert", "../src/graphics/shaders/cube.frag");
+    chunkShader = std::make_shared<Shader>("../src/graphics/shaders/chunk.vert", "../src/graphics/shaders/chunk.frag");
 }
 
 void Renderer::setUpTextures() {
