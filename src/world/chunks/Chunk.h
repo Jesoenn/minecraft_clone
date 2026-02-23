@@ -16,7 +16,7 @@ enum class FaceDirection {
 };
 
 struct Vertex {
-    glm::vec3 pos;
+    glm::vec3 pos;      // Vertex position + chunk local offset (x,y,z)
     glm::vec3 normal;
     glm::vec2 texCoords;
 };
@@ -48,13 +48,9 @@ private:
 
 
     bool isAir(int x, int y, int z); // Check if block is air. True if out of bounds - x<0; x>=chunk_size_x etc.
-    void addFace(FaceDirection direction); // Adds face to mesh - 6 vertices, 2 triangles. TODO: add parameters - direction, texture
+    void addFace(FaceDirection direction, int x, int y, int z); // Adds face to mesh - 6 vertices, 2 triangles. TODO: add parameters - texture
 
-
-    // Czy przechowywac wierzcholki, czy zrobic klase ktora ma "kwadraty"
-    // jak odbywa sie proces rysowania - skad gpu wie jak przeniesc kazdy wierzcholek
     unsigned int VAO, VBO;
-
 };
 
 

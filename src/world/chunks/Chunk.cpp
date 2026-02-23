@@ -6,16 +6,11 @@
 #include "Chunk.h"
 
 // TODO:
-// CHECK IF verticesMesh is used correctly everywhere
-// CHECK opengl calls if they use verticesMesh correctly.
-// fix vertex class! - add block location ivec3 xyz in chunk. Renderer will move chunk
-// addFace does not know block location - add x,y,z
-// addFace doesn't match vertex type. Base it on Vertex. Add movement based on xyz.
-// Move enums and vertex class to different files
-
+// World and Renderer and application uses ChunkManager and chunk.
+// Chunk shader used by renderer. - all necessary uniforms are added by it. Then chunkManager.get(0,0).render or something like that
 
 Chunk::Chunk(int posX, int posZ): posX(posX), posZ(posZ), needUpdate(true) {
-
+    setUp();
 }
 
 void Chunk::buildMesh() {
@@ -26,22 +21,22 @@ void Chunk::buildMesh() {
                     continue;
 
                 if (isAir(x+1,y,z))
-                    addFace(FaceDirection::RIGHT);
+                    addFace(FaceDirection::RIGHT, x, y, z);
 
                 if (isAir(x-1,y,z))
-                    addFace(FaceDirection::LEFT);
+                    addFace(FaceDirection::LEFT, x, y, z);
 
                 if (isAir(x,y+1,z))
-                    addFace(FaceDirection::TOP);
+                    addFace(FaceDirection::TOP, x, y, z);
 
                 if (isAir(x,y-1,z))
-                    addFace(FaceDirection::BOTTOM);
+                    addFace(FaceDirection::BOTTOM, x, y, z);
 
                 if (isAir(x,y,z+1))
-                    addFace(FaceDirection::FRONT);
+                    addFace(FaceDirection::FRONT, x, y, z);
 
                 if (isAir(x,y,z-1))
-                    addFace(FaceDirection::BACK);
+                    addFace(FaceDirection::BACK, x, y, z);
             }
         }
     }
@@ -67,13 +62,16 @@ void Chunk::setUp() {
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-    // TODO addFace does not match Vertex struct - TEMP
     glBufferData(GL_ARRAY_BUFFER, verticesMesh.size() * sizeof(Vertex), verticesMesh.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
     glEnableVertexAttribArray(0);
 
-    // TODO: add normals and tex coords
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+    glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+    glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
 }
@@ -111,7 +109,7 @@ bool Chunk::isAir(int x, int y, int z) {
            blocks[x][y][z] == BlockType::AIR;
 }
 
-void Chunk::addFace(FaceDirection direction) {
+void Chunk::addFace(FaceDirection direction, int x, int y, int z) {
     std::vector<Vertex> vertices;
     if ( direction == FaceDirection::BACK)  {
         vertices = {
@@ -161,6 +159,10 @@ void Chunk::addFace(FaceDirection direction) {
             {{0.5f,  0.5f,  0.5f},  {0.0f,  1.0f,  0.0f},  {1.0f, 0.0f}},
             {{-0.5f,  0.5f,  0.5f}, {0.0f,  1.0f,  0.0f},  {0.0f, 0.0f}}
         };
+    }
+
+    for (Vertex& vertex : vertices) {
+        vertex.pos += glm::vec3(x, y, z);
     }
 
     verticesMesh.insert(verticesMesh.end(), vertices.begin(), vertices.end());
