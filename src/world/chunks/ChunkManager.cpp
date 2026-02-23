@@ -8,12 +8,12 @@
 
 ChunkManager::ChunkManager() {
     //TODO tmp - create function that created few chunks around the spawnpoint and move it to function
-    chunks.insert({0,0}, Chunk(0, 0));
+    chunks.insert({{0,0}, Chunk(0, 0)});
 }
 
 Chunk & ChunkManager::getChunk(glm::ivec2 pos) {
     try {
-        return chunks.at(pos);
+        return chunks.at(std::make_pair(pos.x, pos.y));
     } catch (std::out_of_range& e) {
         throw std::out_of_range("CHUNKMANAGER::getChunk: Chunk doesn't exist");
     }
@@ -25,6 +25,6 @@ Chunk & ChunkManager::getChunk(glm::vec3 pos) {
     return getChunk(chunkPos);
 }
 
-std::map<glm::ivec2, Chunk> & ChunkManager::getAllChunks() {
+std::map<std::pair<int, int>, Chunk> & ChunkManager::getAllChunks() {
     return chunks;
 }
