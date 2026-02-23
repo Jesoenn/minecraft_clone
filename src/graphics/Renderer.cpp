@@ -14,7 +14,7 @@ Renderer::Renderer(Camera& camera, World& world, glm::vec2 windowSize, ChunkMana
     cubeVAO(0), cubeVBO(0), cubeShader(nullptr) {
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    // glEnable(GL_CULL_FACE); //TODO TMP REMOVAL
 
     setUpShaders();
     setUpTextures();
@@ -40,6 +40,9 @@ void Renderer::render() {
     glm::vec3 chunkPos = glm::vec3(0, 0, 0);
     chunkShader->setVec3("chunkOffset", chunkPos);
 
+    // TODO ADD TEXTURE
+    //     blockTextureAtlas.activateTexture(world.getBlockType(i), 0, 1, 2);
+    //     cubeShader->setInt("side_texture", 0);
 
     chunkManager.getChunk({0, 0}).render();
 

@@ -10,6 +10,8 @@
 // Chunk shader used by renderer. - all necessary uniforms are added by it. Then chunkManager.get(0,0).render or something like that
 
 Chunk::Chunk(int posX, int posZ): posX(posX), posZ(posZ), needUpdate(true) {
+    // TODO GENEROWANIE PRZENIESC GDZIES INDZIEJ
+    generate();
     setUp();
 }
 
@@ -119,6 +121,8 @@ void Chunk::addFace(FaceDirection direction, int x, int y, int z) {
             {{0.5f, -0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {1.0f, 0.0f}},
             {{0.5f,  0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {1.0f, 1.0f}},
             {{-0.5f,  0.5f, -0.5f}, {0.0f,  0.0f, -1.0f},  {0.0f, 1.0f}},
+{{-0.5f, -0.5f, -0.5f}, {0.0f,  0.0f, -1.0f},  {0.0f, 0.0f}},
+{{0.5f,  0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {1.0f, 1.0f}},
         };
     } else if ( direction == FaceDirection::FRONT) {
         vertices = {
@@ -127,6 +131,8 @@ void Chunk::addFace(FaceDirection direction, int x, int y, int z) {
             {{0.5f, -0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {1.0f, 0.0f}},
             {{0.5f,  0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {1.0f, 1.0f}},
             {{-0.5f,  0.5f,  0.5f}, {0.0f,  0.0f,  1.0f},  {0.0f, 1.0f}},
+{{-0.5f, -0.5f,  0.5f}, {0.0f,  0.0f,  1.0f},  {0.0f, 0.0f}},
+{{0.5f,  0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {1.0f, 1.0f}},
         };
     } else if ( direction == FaceDirection::LEFT) {
         vertices = {
@@ -135,6 +141,8 @@ void Chunk::addFace(FaceDirection direction, int x, int y, int z) {
             {{-0.5f,  0.5f, -0.5f}, {-1.0f,  0.0f,  0.0f},  {0.0f, 1.0f}},
             {{-0.5f,  0.5f,  0.5f}, {-1.0f,  0.0f,  0.0f},  {1.0f, 1.0f}},
             {{-0.5f, -0.5f,  0.5f}, {-1.0f,  0.0f,  0.0f},  {1.0f, 0.0f}},
+{{-0.5f, -0.5f, -0.5f}, {-1.0f,  0.0f,  0.0f},  {0.0f, 0.0f}},
+{{-0.5f,  0.5f,  0.5f}, {-1.0f,  0.0f,  0.0f},  {1.0f, 1.0f}},
         };
     } else if ( direction == FaceDirection::RIGHT) {
         vertices = {
@@ -143,6 +151,8 @@ void Chunk::addFace(FaceDirection direction, int x, int y, int z) {
             {{0.5f,  0.5f, -0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f, 1.0f}},
             {{0.5f,  0.5f,  0.5f},  {1.0f,  0.0f,  0.0f},  {0.0f, 1.0f}},
             {{0.5f, -0.5f,  0.5f},  {1.0f,  0.0f,  0.0f},  {0.0f, 0.0f}},
+{{0.5f, -0.5f, -0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f, 0.0f}},
+{{0.5f,  0.5f,  0.5f},  {1.0f,  0.0f,  0.0f},  {0.0f, 1.0f}},
         };
     } else if ( direction == FaceDirection::BOTTOM) {
         vertices = {
@@ -151,6 +161,8 @@ void Chunk::addFace(FaceDirection direction, int x, int y, int z) {
             {{0.5f, -0.5f, -0.5f},  {0.0f, -1.0f,  0.0f},  {1.0f, 1.0f}},
             {{0.5f, -0.5f,  0.5f},  {0.0f, -1.0f,  0.0f},  {1.0f, 0.0f}},
             {{-0.5f, -0.5f,  0.5f}, {0.0f, -1.0f,  0.0f},  {0.0f, 0.0f}},
+{{-0.5f, -0.5f, -0.5f}, {0.0f, -1.0f,  0.0f},  {0.0f, 1.0f}},
+{{0.5f, -0.5f,  0.5f},  {0.0f, -1.0f,  0.0f},  {1.0f, 0.0f}},
         };
     } else if ( direction == FaceDirection::TOP) {
         vertices = {
@@ -158,7 +170,9 @@ void Chunk::addFace(FaceDirection direction, int x, int y, int z) {
             {{-0.5f,  0.5f, -0.5f}, {0.0f,  1.0f,  0.0f},  {0.0f, 1.0f}},
             {{0.5f,  0.5f, -0.5f},  {0.0f,  1.0f,  0.0f},  {1.0f, 1.0f}},
             {{0.5f,  0.5f,  0.5f},  {0.0f,  1.0f,  0.0f},  {1.0f, 0.0f}},
-            {{-0.5f,  0.5f,  0.5f}, {0.0f,  1.0f,  0.0f},  {0.0f, 0.0f}}
+            {{-0.5f,  0.5f,  0.5f}, {0.0f,  1.0f,  0.0f},  {0.0f, 0.0f}},
+{{-0.5f,  0.5f, -0.5f}, {0.0f,  1.0f,  0.0f},  {0.0f, 1.0f}},
+{{0.5f,  0.5f,  0.5f},  {0.0f,  1.0f,  0.0f},  {1.0f, 0.0f}},
         };
     }
 
@@ -166,5 +180,12 @@ void Chunk::addFace(FaceDirection direction, int x, int y, int z) {
         vertex.pos += glm::vec3(x, y, z);
     }
 
-    verticesMesh.insert(verticesMesh.end(), vertices.begin(), vertices.end());
+    verticesMesh.push_back(vertices[0]);
+    verticesMesh.push_back(vertices[1]);
+    verticesMesh.push_back(vertices[2]);
+    verticesMesh.push_back(vertices[2]);
+    verticesMesh.push_back(vertices[3]);
+    verticesMesh.push_back(vertices[0]);
+
+    // verticesMesh.insert(verticesMesh.end(), vertices.begin(), vertices.end());
 }
