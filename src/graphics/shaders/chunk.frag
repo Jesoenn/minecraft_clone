@@ -5,10 +5,10 @@ out vec4 fragColor;
 in vec2 texCoords;
 in vec3 normal;
 
-uniform sampler2D texture;
+uniform sampler2D textureAtlas;
 
 
 void main() {
-//    fragColor = texture(top_texture, texCoords);
-    fragColor = vec4(0.5, 0.5, 0.5, 1.0);
+    fragColor = texture(textureAtlas, texCoords);
+//    fragColor = vec4(0.5, 0.5, 0.5, 1.0);
 }

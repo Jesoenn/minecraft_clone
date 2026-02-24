@@ -5,10 +5,6 @@
 #include "glad/glad.h"
 #include "Chunk.h"
 
-// TODO:
-// World and Renderer and application uses ChunkManager and chunk.
-// Chunk shader used by renderer. - all necessary uniforms are added by it. Then chunkManager.get(0,0).render or something like that
-
 Chunk::Chunk(int posX, int posZ): posX(posX), posZ(posZ), needUpdate(true) {
     // TODO GENEROWANIE PRZENIESC GDZIES INDZIEJ
     generate();
@@ -19,26 +15,27 @@ void Chunk::buildMesh() {
     for (int x = 0; x<CHUNK_SIZE_X; x++) {
         for (int y = 0; y<CHUNK_SIZE_Y; y++) {
             for (int z = 0; z<CHUNK_SIZE_Z; z++) {
-                if (blocks[x][y][z] == BlockType::AIR)
+                BlockType type = blocks[x][y][z];
+                if (type == BlockType::AIR)
                     continue;
 
                 if (isAir(x+1,y,z))
-                    addFace(FaceDirection::RIGHT, x, y, z);
+                    addFace(FaceDirection::RIGHT, x, y, z, type);
 
                 if (isAir(x-1,y,z))
-                    addFace(FaceDirection::LEFT, x, y, z);
+                    addFace(FaceDirection::LEFT, x, y, z, type);
 
                 if (isAir(x,y+1,z))
-                    addFace(FaceDirection::TOP, x, y, z);
+                    addFace(FaceDirection::TOP, x, y, z, type);
 
                 if (isAir(x,y-1,z))
-                    addFace(FaceDirection::BOTTOM, x, y, z);
+                    addFace(FaceDirection::BOTTOM, x, y, z, type);
 
                 if (isAir(x,y,z+1))
-                    addFace(FaceDirection::FRONT, x, y, z);
+                    addFace(FaceDirection::FRONT, x, y, z, type);
 
                 if (isAir(x,y,z-1))
-                    addFace(FaceDirection::BACK, x, y, z);
+                    addFace(FaceDirection::BACK, x, y, z, type);
             }
         }
     }
@@ -72,7 +69,7 @@ void Chunk::setUp() {
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
     glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
@@ -83,6 +80,8 @@ void Chunk::generate() {
         for (int y = 0; y < CHUNK_SIZE_Y; y++) {
             for (int z = 0; z < CHUNK_SIZE_Z; z++) {
                 blocks[x][y][z] = BlockType::DIRT;
+                if (y == 8)
+                    blocks[x][y][z] = BlockType::AIR;
             }
         }
     }
@@ -112,17 +111,17 @@ bool Chunk::isAir(int x, int y, int z) {
 }
 
 // TODO THERE IS ONLY 4 VERTICES AND I NEED 6 FOR 2 TRIANGLES
-void Chunk::addFace(FaceDirection direction, int x, int y, int z) {
+void Chunk::addFace(FaceDirection direction, int x, int y, int z, BlockType type) {
     std::vector<Vertex> vertices;
     if ( direction == FaceDirection::BACK)  {
         vertices = {
             // positions                              // normals                            // tex coords
-            {{-0.5f, -0.5f, -0.5f}, {0.0f,  0.0f, -1.0f},  {0.0f, 0.0f}},
             {{0.5f, -0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {1.0f, 0.0f}},
+            {{-0.5f, -0.5f, -0.5f}, {0.0f,  0.0f, -1.0f},  {0.0f, 0.0f}},
             {{0.5f,  0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {1.0f, 1.0f}},
             {{-0.5f,  0.5f, -0.5f}, {0.0f,  0.0f, -1.0f},  {0.0f, 1.0f}},
-{{-0.5f, -0.5f, -0.5f}, {0.0f,  0.0f, -1.0f},  {0.0f, 0.0f}},
-{{0.5f,  0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {1.0f, 1.0f}},
+            {{0.5f,  0.5f, -0.5f},  {0.0f,  0.0f, -1.0f},  {1.0f, 1.0f}},
+            {{-0.5f, -0.5f, -0.5f}, {0.0f,  0.0f, -1.0f},  {0.0f, 0.0f}},
         };
     } else if ( direction == FaceDirection::FRONT) {
         vertices = {
@@ -131,18 +130,18 @@ void Chunk::addFace(FaceDirection direction, int x, int y, int z) {
             {{0.5f, -0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {1.0f, 0.0f}},
             {{0.5f,  0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {1.0f, 1.0f}},
             {{-0.5f,  0.5f,  0.5f}, {0.0f,  0.0f,  1.0f},  {0.0f, 1.0f}},
-{{-0.5f, -0.5f,  0.5f}, {0.0f,  0.0f,  1.0f},  {0.0f, 0.0f}},
-{{0.5f,  0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {1.0f, 1.0f}},
+            {{-0.5f, -0.5f,  0.5f}, {0.0f,  0.0f,  1.0f},  {0.0f, 0.0f}},
+            {{0.5f,  0.5f,  0.5f},  {0.0f,  0.0f,  1.0f},  {1.0f, 1.0f}},
         };
     } else if ( direction == FaceDirection::LEFT) {
         vertices = {
             // positions                              // normals                            // tex coords
-            {{-0.5f, -0.5f, -0.5f}, {-1.0f,  0.0f,  0.0f},  {0.0f, 0.0f}},
             {{-0.5f,  0.5f, -0.5f}, {-1.0f,  0.0f,  0.0f},  {0.0f, 1.0f}},
+            {{-0.5f, -0.5f, -0.5f}, {-1.0f,  0.0f,  0.0f},  {0.0f, 0.0f}},
             {{-0.5f,  0.5f,  0.5f}, {-1.0f,  0.0f,  0.0f},  {1.0f, 1.0f}},
             {{-0.5f, -0.5f,  0.5f}, {-1.0f,  0.0f,  0.0f},  {1.0f, 0.0f}},
-{{-0.5f, -0.5f, -0.5f}, {-1.0f,  0.0f,  0.0f},  {0.0f, 0.0f}},
-{{-0.5f,  0.5f,  0.5f}, {-1.0f,  0.0f,  0.0f},  {1.0f, 1.0f}},
+            {{-0.5f,  0.5f,  0.5f}, {-1.0f,  0.0f,  0.0f},  {1.0f, 1.0f}},
+            {{-0.5f, -0.5f, -0.5f}, {-1.0f,  0.0f,  0.0f},  {0.0f, 0.0f}},
         };
     } else if ( direction == FaceDirection::RIGHT) {
         vertices = {
@@ -151,8 +150,8 @@ void Chunk::addFace(FaceDirection direction, int x, int y, int z) {
             {{0.5f,  0.5f, -0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f, 1.0f}},
             {{0.5f,  0.5f,  0.5f},  {1.0f,  0.0f,  0.0f},  {0.0f, 1.0f}},
             {{0.5f, -0.5f,  0.5f},  {1.0f,  0.0f,  0.0f},  {0.0f, 0.0f}},
-{{0.5f, -0.5f, -0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f, 0.0f}},
-{{0.5f,  0.5f,  0.5f},  {1.0f,  0.0f,  0.0f},  {0.0f, 1.0f}},
+            {{0.5f, -0.5f, -0.5f},  {1.0f,  0.0f,  0.0f},  {1.0f, 0.0f}},
+            {{0.5f,  0.5f,  0.5f},  {1.0f,  0.0f,  0.0f},  {0.0f, 1.0f}},
         };
     } else if ( direction == FaceDirection::BOTTOM) {
         vertices = {
@@ -161,31 +160,28 @@ void Chunk::addFace(FaceDirection direction, int x, int y, int z) {
             {{0.5f, -0.5f, -0.5f},  {0.0f, -1.0f,  0.0f},  {1.0f, 1.0f}},
             {{0.5f, -0.5f,  0.5f},  {0.0f, -1.0f,  0.0f},  {1.0f, 0.0f}},
             {{-0.5f, -0.5f,  0.5f}, {0.0f, -1.0f,  0.0f},  {0.0f, 0.0f}},
-{{-0.5f, -0.5f, -0.5f}, {0.0f, -1.0f,  0.0f},  {0.0f, 1.0f}},
-{{0.5f, -0.5f,  0.5f},  {0.0f, -1.0f,  0.0f},  {1.0f, 0.0f}},
+            {{-0.5f, -0.5f, -0.5f}, {0.0f, -1.0f,  0.0f},  {0.0f, 1.0f}},
+            {{0.5f, -0.5f,  0.5f},  {0.0f, -1.0f,  0.0f},  {1.0f, 0.0f}},
         };
     } else if ( direction == FaceDirection::TOP) {
         vertices = {
             // positions                             // normals                            // tex coords
-            {{-0.5f,  0.5f, -0.5f}, {0.0f,  1.0f,  0.0f},  {0.0f, 1.0f}},
             {{0.5f,  0.5f, -0.5f},  {0.0f,  1.0f,  0.0f},  {1.0f, 1.0f}},
+            {{-0.5f,  0.5f, -0.5f}, {0.0f,  1.0f,  0.0f},  {0.0f, 1.0f}},
             {{0.5f,  0.5f,  0.5f},  {0.0f,  1.0f,  0.0f},  {1.0f, 0.0f}},
             {{-0.5f,  0.5f,  0.5f}, {0.0f,  1.0f,  0.0f},  {0.0f, 0.0f}},
-{{-0.5f,  0.5f, -0.5f}, {0.0f,  1.0f,  0.0f},  {0.0f, 1.0f}},
-{{0.5f,  0.5f,  0.5f},  {0.0f,  1.0f,  0.0f},  {1.0f, 0.0f}},
+            {{0.5f,  0.5f,  0.5f},  {0.0f,  1.0f,  0.0f},  {1.0f, 0.0f}},
+            {{-0.5f,  0.5f, -0.5f}, {0.0f,  1.0f,  0.0f},  {0.0f, 1.0f}},
         };
     }
 
     for (Vertex& vertex : vertices) {
         vertex.pos += glm::vec3(x, y, z);
+        vertex.texCoords += getTextureOffset(type, direction);
     }
+    verticesMesh.insert(verticesMesh.end(), vertices.begin(), vertices.end());
+}
 
-    verticesMesh.push_back(vertices[0]);
-    verticesMesh.push_back(vertices[1]);
-    verticesMesh.push_back(vertices[2]);
-    verticesMesh.push_back(vertices[2]);
-    verticesMesh.push_back(vertices[3]);
-    verticesMesh.push_back(vertices[0]);
-
-    // verticesMesh.insert(verticesMesh.end(), vertices.begin(), vertices.end());
+glm::vec2 Chunk::getTextureOffset(BlockType type, FaceDirection direction) {
+    return {0,0};
 }

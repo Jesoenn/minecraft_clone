@@ -14,7 +14,7 @@ Renderer::Renderer(Camera& camera, World& world, glm::vec2 windowSize, ChunkMana
     cubeVAO(0), cubeVBO(0), cubeShader(nullptr) {
 
     glEnable(GL_DEPTH_TEST);
-    // glEnable(GL_CULL_FACE); //TODO TMP REMOVAL
+    glEnable(GL_CULL_FACE);
 
     setUpShaders();
     setUpTextures();
@@ -40,33 +40,11 @@ void Renderer::render() {
     glm::vec3 chunkPos = glm::vec3(0, 0, 0);
     chunkShader->setVec3("chunkOffset", chunkPos);
 
-    // TODO ADD TEXTURE
-    //     blockTextureAtlas.activateTexture(world.getBlockType(i), 0, 1, 2);
-    //     cubeShader->setInt("side_texture", 0);
+    // TODO ADD TEXTURES NORMALLY
+    blockTextureAtlas.activateTexture(BlockType::DIRT, 0, 1, 2);
+    chunkShader->setInt("textureAtlas", 0);
 
     chunkManager.getChunk({0, 0}).render();
-
-    // // Set shader uniforms
-    // cubeShader->use();
-    // glm::mat4 projection = glm::perspective(glm::radians(camera.fov), windowSize.x/windowSize.y, 0.1f, 1000.0f);
-    // cubeShader->setMat4("projection", projection);
-    // cubeShader->setMat4("view", camera.getViewMatrix());
-    //
-    // glm::mat4 model;
-    // std::vector<glm::vec3> cubes = world.getBlockPositions();
-    // for (int i=0; i<cubes.size(); i++) {
-    //     model = glm::mat4(1.0f);
-    //     model = glm::translate(model, cubes[i]);
-    //     cubeShader->setMat4("model", model);
-    //
-    //     blockTextureAtlas.activateTexture(world.getBlockType(i), 0, 1, 2);
-    //     cubeShader->setInt("side_texture", 0);
-    //     cubeShader->setInt("top_texture", 1);
-    //     cubeShader->setInt("bottom_texture", 2);
-    //
-    //     glBindVertexArray(cubeVAO);
-    //     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-    // }
 }
 
 void Renderer::toggleWireframe() {

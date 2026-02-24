@@ -13,6 +13,9 @@
 class ChunkManager {
 public:
     ChunkManager();
+
+    void generateChunks();
+
     //TODO void loadChunk(glm::ivec2 pos); // Load chunk when perlin noise added
     Chunk& getChunk(glm::ivec2 pos);
     Chunk& getChunk(glm::vec3 pos);

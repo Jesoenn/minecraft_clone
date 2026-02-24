@@ -8,6 +8,10 @@
 
 ChunkManager::ChunkManager() {
     //TODO tmp - create function that created few chunks around the spawnpoint and move it to function
+    generateChunks();
+}
+
+void ChunkManager::generateChunks() {
     chunks.insert({{0,0}, Chunk(0, 0)});
 }
 
