@@ -6,13 +6,14 @@
 
 #include <stdexcept>
 
-ChunkManager::ChunkManager() {
+ChunkManager::ChunkManager():
+    texAtlas("../resources/texture_atlas.png") {
     //TODO tmp - create function that created few chunks around the spawnpoint and move it to function
     generateChunks();
 }
 
 void ChunkManager::generateChunks() {
-    chunks.insert({{0,0}, Chunk(0, 0)});
+    chunks.insert({{0,0}, Chunk(0, 0, texAtlas)});
 }
 
 Chunk & ChunkManager::getChunk(glm::ivec2 pos) {

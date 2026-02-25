@@ -8,6 +8,7 @@
 #include <glm/vec3.hpp>
 
 #include "Chunk.h"
+#include "../../graphics/BlockTextureAtlas.h"
 
 
 class ChunkManager {
@@ -24,6 +25,7 @@ public:
 private:
     std::map<std::pair<int, int>, Chunk> chunks;
 
+    BlockTextureAtlas texAtlas;
 };
 
 

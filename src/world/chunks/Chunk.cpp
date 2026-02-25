@@ -5,7 +5,7 @@
 #include "glad/glad.h"
 #include "Chunk.h"
 
-Chunk::Chunk(int posX, int posZ): posX(posX), posZ(posZ), needUpdate(true) {
+Chunk::Chunk(int posX, int posZ, BlockTextureAtlas& texAtlas): posX(posX), posZ(posZ), needUpdate(true), texAtlas(texAtlas) {
     // TODO GENEROWANIE PRZENIESC GDZIES INDZIEJ
     generate();
     setUp();
@@ -79,9 +79,17 @@ void Chunk::generate() {
     for (int x = 0; x < CHUNK_SIZE_X; x++) {
         for (int y = 0; y < CHUNK_SIZE_Y; y++) {
             for (int z = 0; z < CHUNK_SIZE_Z; z++) {
-                blocks[x][y][z] = BlockType::DIRT;
-                if (y == 8)
+                if (y < 6) {
+                    blocks[x][y][z] = BlockType::DIRT;
+                } else if (y == 6) {
                     blocks[x][y][z] = BlockType::AIR;
+                } else if (y < 11) {
+                    blocks[x][y][z] = BlockType::STONE;
+                } else if (y == 11) {
+                    blocks[x][y][z] = BlockType::AIR;
+                } else {
+                    blocks[x][y][z] = BlockType::GRASS_BLOCK;
+                }
             }
         }
     }
@@ -110,7 +118,6 @@ bool Chunk::isAir(int x, int y, int z) {
            blocks[x][y][z] == BlockType::AIR;
 }
 
-// TODO THERE IS ONLY 4 VERTICES AND I NEED 6 FOR 2 TRIANGLES
 void Chunk::addFace(FaceDirection direction, int x, int y, int z, BlockType type) {
     std::vector<Vertex> vertices;
     if ( direction == FaceDirection::BACK)  {
@@ -177,11 +184,14 @@ void Chunk::addFace(FaceDirection direction, int x, int y, int z, BlockType type
 
     for (Vertex& vertex : vertices) {
         vertex.pos += glm::vec3(x, y, z);
+        // Normalize texture coords to one block texture size and add offset
+        vertex.texCoords /= texAtlas.getAtlasSize();
+        vertex.texCoords *= texAtlas.blockTexSize;
         vertex.texCoords += getTextureOffset(type, direction);
     }
     verticesMesh.insert(verticesMesh.end(), vertices.begin(), vertices.end());
 }
 
 glm::vec2 Chunk::getTextureOffset(BlockType type, FaceDirection direction) {
-    return {0,0};
+    return texAtlas.getTextureCoords(type, direction);
 }

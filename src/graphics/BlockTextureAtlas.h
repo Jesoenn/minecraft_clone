@@ -5,9 +5,11 @@
 #ifndef BLOCKTEXTUREATLAS_H
 #define BLOCKTEXTUREATLAS_H
 #include <map>
+#include <memory>
 
 #include "Texture.h"
 #include "../core/World.h"
+#include "../util/FaceDirection.h"
 
 struct BlockTextures {
     Texture side_texture;
@@ -17,15 +19,23 @@ struct BlockTextures {
 
 class BlockTextureAtlas {
 public:
-    BlockTextureAtlas();
+    const int blockTexSize = 16;
 
-    void loadAllTextures();
-    Texture loadTexture(const char *path);
+    BlockTextureAtlas(const char *path);
 
-    void activateTexture(BlockType blockType, int textureUnit, int topTextureUnit, int bottomTextureUnit);
+    // Getters
+    glm::vec2 getAtlasSize();
+    glm::vec2 getTextureCoords(BlockType blockType, FaceDirection faceDirection);
+
 private:
-    std::map<BlockType, BlockTextures> textureMap;
+    int atlasWidth, atlasHeight;
+    std::unique_ptr<Texture> atlasTexture;
 
+    // SetUp
+    void loadAtlas(const char *path);
+    void setUpBlockTextureOffsets();
+
+    std::map<std::pair<BlockType, FaceDirection>, glm::vec2> texPos; // Bottom left of each texture
 };
 
 

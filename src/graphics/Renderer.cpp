@@ -17,7 +17,6 @@ Renderer::Renderer(Camera& camera, World& world, glm::vec2 windowSize, ChunkMana
     glEnable(GL_CULL_FACE);
 
     setUpShaders();
-    setUpTextures();
     setUpCube();
 }
 
@@ -40,8 +39,6 @@ void Renderer::render() {
     glm::vec3 chunkPos = glm::vec3(0, 0, 0);
     chunkShader->setVec3("chunkOffset", chunkPos);
 
-    // TODO ADD TEXTURES NORMALLY
-    blockTextureAtlas.activateTexture(BlockType::DIRT, 0, 1, 2);
     chunkShader->setInt("textureAtlas", 0);
 
     chunkManager.getChunk({0, 0}).render();
@@ -64,10 +61,6 @@ void Renderer::setWindowSize(glm::vec2 windowSize) {
 void Renderer::setUpShaders() {
     cubeShader = std::make_shared<Shader>("../src/graphics/shaders/cube.vert", "../src/graphics/shaders/cube.frag");
     chunkShader = std::make_shared<Shader>("../src/graphics/shaders/chunk.vert", "../src/graphics/shaders/chunk.frag");
-}
-
-void Renderer::setUpTextures() {
-    blockTextureAtlas.loadAllTextures();
 }
 
 void Renderer::setUpCube() {

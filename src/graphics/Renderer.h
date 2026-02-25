@@ -25,7 +25,6 @@ public:
 
     // Set up
     void setUpShaders();
-    void setUpTextures();
     void setUpCube();
 
     // Setters
@@ -37,7 +36,6 @@ private:
     Camera& camera;
     World& world;
     ChunkManager& chunkManager;
-    BlockTextureAtlas blockTextureAtlas;
 
     glm::vec2 windowSize;
 
