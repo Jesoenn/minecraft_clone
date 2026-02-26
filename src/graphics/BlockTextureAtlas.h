@@ -8,14 +8,9 @@
 #include <memory>
 
 #include "Texture.h"
-#include "../core/World.h"
 #include "../util/FaceDirection.h"
-
-struct BlockTextures {
-    Texture side_texture;
-    Texture top_texture;
-    Texture bottom_texture;
-};
+#include "../world/Block.h"
+#include <glm/glm.hpp>
 
 class BlockTextureAtlas {
 public:

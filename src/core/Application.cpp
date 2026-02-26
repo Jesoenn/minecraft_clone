@@ -15,7 +15,7 @@ Application::Application(int width, int height, const std::string& title):
 
     // Game objects
     chunkManager = std::make_shared<ChunkManager>();
-    world = std::make_shared<World>();
+    world = std::make_shared<World>(*chunkManager);
     renderer = std::make_shared<Renderer>(world->getCamera(), *world, window->getSize(), *chunkManager);
     input = std::make_shared<InputManager>(*world, *window, *renderer);
 }

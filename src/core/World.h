@@ -7,6 +7,7 @@
 #include "../graphics/Camera.h"
 #include "../world/Block.h"
 #include "../world/Player.h"
+#include "../world/chunks/ChunkManager.h"
 
 constexpr float GRAVITY = 25.f;
 constexpr float JUMP_FORCE = 8.4f;
@@ -14,7 +15,7 @@ constexpr float MAX_Y_VELOCITY = 25.f;
 
 class World {
 public:
-    World();
+    World(ChunkManager& chunkManager);
 
     void setUp();
 
@@ -36,8 +37,8 @@ public:
 private:
     Player player;
     Camera camera;
-    std::vector<glm::vec3> blockPositions;
-    std::vector<Block> blocks;
+
+    ChunkManager& chunkManager;
 
     bool physicsEnabled;
 

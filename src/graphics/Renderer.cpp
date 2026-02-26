@@ -24,24 +24,21 @@ void Renderer::render() {
     glClearColor(0.3f, 0.3f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // TODO RENDER CHUNKS - get chunks from chunkManager and render them
-    // TODO CREATE TEMPORARY NEW RENDER METHOD BASED ON CHUNK.CPP TODO
-    // glm::ivec2 test = chunkManager.getChunk({0, 0}).getPosition();
-    // std::cout<< "Chunk position: " << test.x << ", " << test.y << std::endl;
-
     chunkShader->use();
     glm::mat4 projection = glm::perspective(glm::radians(camera.fov), windowSize.x/windowSize.y, 0.1f, 1000.0f);
     chunkShader->setMat4("projection", projection);
     chunkShader->setMat4("view", camera.getViewMatrix());
     glm::mat4 model = glm::mat4(1.0f);
     chunkShader->setMat4("model", model);
-
-    glm::vec3 chunkPos = glm::vec3(0, 0, 0);
-    chunkShader->setVec3("chunkOffset", chunkPos);
-
     chunkShader->setInt("textureAtlas", 0);
 
-    chunkManager.getChunk({0, 0}).render();
+    std::map<std::pair<int, int>, Chunk>& chunks = chunkManager.getAllChunks();
+    for (auto& [pos, chunk] : chunks) {
+        glm::vec3 chunkPos = glm::vec3(pos.first, 0, pos.second);
+        chunkShader->setVec3("chunkOffset", chunkPos);
+        chunk.render();
+    }
+
 }
 
 void Renderer::toggleWireframe() {

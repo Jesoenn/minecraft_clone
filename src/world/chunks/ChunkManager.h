@@ -10,6 +10,7 @@
 #include "Chunk.h"
 #include "../../graphics/BlockTextureAtlas.h"
 
+const int START_CHUNKS_RADIUS = 0; // Number of chunks generated around spawn point at the start of the game.
 
 class ChunkManager {
 public:
@@ -24,8 +25,9 @@ public:
 
 private:
     std::map<std::pair<int, int>, Chunk> chunks;
-
     BlockTextureAtlas texAtlas;
+
+    std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X> generateChunkContent(glm::ivec2 pos);
 };
 
 

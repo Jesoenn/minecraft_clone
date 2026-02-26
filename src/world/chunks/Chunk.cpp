@@ -5,10 +5,10 @@
 #include "glad/glad.h"
 #include "Chunk.h"
 
-Chunk::Chunk(int posX, int posZ, BlockTextureAtlas& texAtlas): posX(posX), posZ(posZ), needUpdate(true), texAtlas(texAtlas) {
-    // TODO GENEROWANIE PRZENIESC GDZIES INDZIEJ
-    generate();
+Chunk::Chunk(int posX, int posZ, BlockTextureAtlas& texAtlas, std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X> blocks):
+    posX(posX), posZ(posZ), blocks(blocks), texAtlas(texAtlas), needUpdate(true) {
     setUp();
+    buildMesh();
 }
 
 void Chunk::buildMesh() {
@@ -75,26 +75,6 @@ void Chunk::setUp() {
     glBindVertexArray(0);
 }
 
-void Chunk::generate() {
-    for (int x = 0; x < CHUNK_SIZE_X; x++) {
-        for (int y = 0; y < CHUNK_SIZE_Y; y++) {
-            for (int z = 0; z < CHUNK_SIZE_Z; z++) {
-                if (y < 6) {
-                    blocks[x][y][z] = BlockType::DIRT;
-                } else if (y == 6) {
-                    blocks[x][y][z] = BlockType::AIR;
-                } else if (y < 11) {
-                    blocks[x][y][z] = BlockType::STONE;
-                } else if (y == 11) {
-                    blocks[x][y][z] = BlockType::AIR;
-                } else {
-                    blocks[x][y][z] = BlockType::GRASS_BLOCK;
-                }
-            }
-        }
-    }
-}
-
 void Chunk::setBlock(glm::ivec3 pos, BlockType block) {
     blocks[pos.x][pos.y][pos.z] = block;
 }
@@ -109,6 +89,10 @@ glm::ivec2 Chunk::getPosition() {
 
 std::vector<Vertex> & Chunk::getMesh() {
     return verticesMesh;
+}
+
+std::array<std::array<std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X> Chunk::getBlocks() {
+    return blocks;
 }
 
 bool Chunk::isAir(int x, int y, int z) {
