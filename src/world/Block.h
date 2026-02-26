@@ -11,7 +11,8 @@
 enum class BlockType {
     AIR,
     DIRT,
-    GRASS_BLOCK
+    GRASS_BLOCK,
+    STONE
 };
 
 class Block {

@@ -13,18 +13,18 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "../core/World.h"
+#include "../world/chunks/ChunkManager.h"
 
 
 class Renderer {
 public:
-    Renderer(Camera& camera, World& world, glm::vec2 windowSize);
+    Renderer(Camera& camera, World& world, glm::vec2 windowSize, ChunkManager& chunkManager);
 
     void render();
     void toggleWireframe();
 
     // Set up
     void setUpShaders();
-    void setUpTextures();
     void setUpCube();
 
     // Setters
@@ -35,13 +35,14 @@ private:
 
     Camera& camera;
     World& world;
-    BlockTextureAtlas blockTextureAtlas;
+    ChunkManager& chunkManager;
 
     glm::vec2 windowSize;
 
     // Visual
     GLuint cubeVAO, cubeVBO, cubeEBO;
     std::shared_ptr<Shader> cubeShader;
+    std::shared_ptr<Shader> chunkShader;
 };
 
 

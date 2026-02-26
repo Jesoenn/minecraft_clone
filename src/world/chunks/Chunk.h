@@ -5,42 +5,56 @@
 #ifndef CHUNK_H
 #define CHUNK_H
 
+#include "../../graphics/BlockTextureAtlas.h"
 #include "../Block.h"
+#include "../../util/FaceDirection.h"
+#include <array>
 
-constexpr int SIZE = 16;
+const int CHUNK_SIZE_X = 16;
+const int CHUNK_SIZE_Y = 16;
+const int CHUNK_SIZE_Z = 16;
 
 struct Vertex {
-    glm::vec3 pos;
+    glm::vec3 pos;      // Vertex position + chunk local offset (x,y,z)
     glm::vec3 normal;
-    glm::vec2 textureCoords;
-    BlockType type;
+    glm::vec2 texCoords;    // Texture coordinates + offset based on block type
 };
+
+// TODO
+// #4 Collisions based on all chunks first
+// #5 Collisions based on nearby chunks
 
 class Chunk {
 public:
-    Chunk(glm::ivec3 pos);
+    Chunk(int posX, int posZ, BlockTextureAtlas& texAtlas, std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X> blocks);
 
+    void setUp();
     void buildMesh();
+    void render();
 
     // Setters
     void setBlock(glm::ivec3 pos, BlockType block);
 
     // Getters
-    Block getBlock(glm::ivec3 pos);
-    glm::ivec3 getPosition();
+    BlockType getBlock(glm::ivec3 pos);
+    glm::ivec2 getPosition();
     std::vector<Vertex>& getMesh();
+    std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X> getBlocks();
 
 private:
-    glm::ivec3 pos;
-    std::vector<BlockType> blocks;
+    int posX, posZ;
+    std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X> blocks;
     std::vector<Vertex> verticesMesh;
 
-    // Czy przechowywac wierzcholki, czy zrobic klase ktora ma "kwadraty"
-    // jak odbywa sie proces rysowania - skad gpu wie jak przeniesc kazdy wierzcholek
     unsigned int VAO, VBO;
+    BlockTextureAtlas& texAtlas;
 
-    int posToIndex(glm::ivec3 pos);
+    bool needUpdate; // TODO WHEN BLOCK PLACING/DESTROYING IS ADDED
 
+    bool isAir(int x, int y, int z); // Check if block is air. True if out of bounds - x<0; x>=chunk_size_x etc.
+    void addFace(FaceDirection direction, int x, int y, int z, BlockType type); // Adds face to mesh - 6 vertices, 2 triangles.
+
+    glm::vec2 getTextureOffset(BlockType type, FaceDirection direction);
 };
 
 

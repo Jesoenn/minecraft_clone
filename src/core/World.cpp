@@ -6,45 +6,7 @@
 
 #include <iostream>
 
-World::World(): player(0.0f), physicsEnabled(false) {
-    setUp();
-}
-
-void World::setUp() {
-    // 16x16x256 - 14fps
-
-    for (int i =0; i<16; i++) {
-        for (int j=0; j<16; j++) {
-            // for (int k=0; k<256; k++) {
-            //     blockPositions.emplace_back(i, -k, j);
-            //     blocks.emplace_back(BlockType::GRASS_BLOCK);
-            // }
-            blockPositions.emplace_back(i+1, -1.f, j);
-            if (j%2 == 0) {
-                blocks.emplace_back(BlockType::GRASS_BLOCK);
-            } else {
-                blocks.emplace_back(BlockType::DIRT);
-            }
-        }
-    }
-    // 1 block above plane
-    blockPositions.emplace_back(6.f, 0.f, 6.f);
-    blocks.emplace_back(BlockType::GRASS_BLOCK);
-    // Ceiling
-    blockPositions.emplace_back(10.f, 2.f, 4.f);
-    blocks.emplace_back(BlockType::DIRT);
-
-    blockPositions.emplace_back(0.f, 1.f, -2.f);
-    blocks.emplace_back(BlockType::GRASS_BLOCK);
-
-    blockPositions.emplace_back(3.f, 1.f, -2.f);
-    blocks.emplace_back(BlockType::DIRT);
-
-    // box
-    blockPositions.emplace_back(-3.f, 0.f, -2.f);
-    blocks.emplace_back(BlockType::DIRT);
-    blockPositions.emplace_back(-4.f, 0.f, -1.f);
-    blocks.emplace_back(BlockType::DIRT);
+World::World(ChunkManager& chunkManager): player(0.0f), chunkManager(chunkManager), physicsEnabled(false) {
 }
 
 void World::updatePhysics(const float deltaTime) {
@@ -151,23 +113,43 @@ void World::jumpPhysics(float deltaTime) {
 
 
 bool World::checkCollision(const glm::vec3 newPos) {
-    // TODO check by chunk and in radius - for example 3
-    for (glm::vec3 &block : blockPositions) {
-        float distance = glm::length(block - player.getPosition());
-        if (distance > 3.8f) {
-            continue;
-        }
-        glm::vec3 playerSize = player.getSize();
+    // TODO:
+    // #1 add chunks to check around chunk where player is currently.
+    //      - Take closest chunks. If chunk is non-existing chunk, then somehow skip(?)
+    //      - Add function in chunkManager bool chunkExists(pos) - so no error is thrown.
+    // #2 Check only closest blocks to player - radius like 3 maybe. Check performance
 
-        // AABB collision check
-        // https://www.youtube.com/watch?v=59BTXB-kFNs
-        if ( newPos.x - playerSize.x/2 < block.x + 0.5f && newPos.x + playerSize.x/2 > block.x - 0.5f &&
-             newPos.y - playerSize.y/2 < block.y + 0.5f && newPos.y + playerSize.y/2 > block.y - 0.5f &&
-             newPos.z - playerSize.z/2 < block.z + 0.5 && newPos.z + playerSize.z/2 > block.z - 0.5f) {
 
-            return true;
+    Chunk& chunk = chunkManager.getChunk(player.getPosition());
+    std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X> blocks = chunk.getBlocks();
+
+    for (int x = 0; x < CHUNK_SIZE_X; x++) {
+        for (int y = 0; y < CHUNK_SIZE_Y; y++) {
+            for (int z = 0; z < CHUNK_SIZE_Z; z++) {
+                glm::vec3 blockPos = glm::vec3(chunk.getPosition().x + x, y, chunk.getPosition().y + z);
+
+                if ( blocks[x][y][z] == BlockType::AIR) {
+                    continue;
+                }
+
+                float distance = glm::length(blockPos - player.getPosition());
+                if (distance > 3.8f) {
+                    continue;
+                }
+                glm::vec3 playerSize = player.getSize();
+
+                // AABB collision check
+                // https://www.youtube.com/watch?v=59BTXB-kFNs
+                if ( newPos.x - playerSize.x/2 < blockPos.x + 0.5f && newPos.x + playerSize.x/2 > blockPos.x - 0.5f &&
+                     newPos.y - playerSize.y/2 < blockPos.y + 0.5f && newPos.y + playerSize.y/2 > blockPos.y - 0.5f &&
+                     newPos.z - playerSize.z/2 < blockPos.z + 0.5f && newPos.z + playerSize.z/2 > blockPos.z - 0.5f) {
+
+                    return true;
+                }
+            }
         }
     }
+
     return false;
 }
 
@@ -203,16 +185,4 @@ void World::togglePhysics() {
 
 Camera & World::getCamera() {
     return camera;
-}
-
-std::vector<glm::vec3> World::getBlockPositions() const {
-    return blockPositions;
-}
-
-BlockType World::getBlockType(const int blockId) const {
-    return blocks[blockId].getType();
-}
-
-std::vector<Block> World::getBlocks() const {
-    return blocks;
 }

@@ -8,49 +8,37 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
 
-Renderer::Renderer(Camera& camera, World& world, glm::vec2 windowSize):
+Renderer::Renderer(Camera& camera, World& world, glm::vec2 windowSize, ChunkManager& chunkManager):
     wireFrameMode(false),
-    camera(camera), world(world), windowSize(windowSize),
+    camera(camera), world(world), chunkManager(chunkManager), windowSize(windowSize),
     cubeVAO(0), cubeVBO(0), cubeShader(nullptr) {
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
     setUpShaders();
-    setUpTextures();
     setUpCube();
 }
-
-//TODO:
-// Kolizje, skakanie pod przycisk
-// CHUNKI
-
 
 void Renderer::render() {
     glClearColor(0.3f, 0.3f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Set shader uniforms
-    cubeShader->use();
+    chunkShader->use();
     glm::mat4 projection = glm::perspective(glm::radians(camera.fov), windowSize.x/windowSize.y, 0.1f, 1000.0f);
-    cubeShader->setMat4("projection", projection);
-    cubeShader->setMat4("view", camera.getViewMatrix());
+    chunkShader->setMat4("projection", projection);
+    chunkShader->setMat4("view", camera.getViewMatrix());
+    glm::mat4 model = glm::mat4(1.0f);
+    chunkShader->setMat4("model", model);
+    chunkShader->setInt("textureAtlas", 0);
 
-    glm::mat4 model;
-    std::vector<glm::vec3> cubes = world.getBlockPositions();
-    for (int i=0; i<cubes.size(); i++) {
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, cubes[i]);
-        cubeShader->setMat4("model", model);
-
-        blockTextureAtlas.activateTexture(world.getBlockType(i), 0, 1, 2);
-        cubeShader->setInt("side_texture", 0);
-        cubeShader->setInt("top_texture", 1);
-        cubeShader->setInt("bottom_texture", 2);
-
-        glBindVertexArray(cubeVAO);
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+    std::map<std::pair<int, int>, Chunk>& chunks = chunkManager.getAllChunks();
+    for (auto& [pos, chunk] : chunks) {
+        glm::vec3 chunkPos = glm::vec3(pos.first, 0, pos.second);
+        chunkShader->setVec3("chunkOffset", chunkPos);
+        chunk.render();
     }
+
 }
 
 void Renderer::toggleWireframe() {
@@ -69,10 +57,7 @@ void Renderer::setWindowSize(glm::vec2 windowSize) {
 
 void Renderer::setUpShaders() {
     cubeShader = std::make_shared<Shader>("../src/graphics/shaders/cube.vert", "../src/graphics/shaders/cube.frag");
-}
-
-void Renderer::setUpTextures() {
-    blockTextureAtlas.loadAllTextures();
+    chunkShader = std::make_shared<Shader>("../src/graphics/shaders/chunk.vert", "../src/graphics/shaders/chunk.frag");
 }
 
 void Renderer::setUpCube() {

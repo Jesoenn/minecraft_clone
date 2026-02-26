@@ -1,6 +1,6 @@
 # Minecraft Clone
 
-#### Date: 17.02.2026
+#### Date: 25.02.2026
 
 ## Description
 
@@ -8,9 +8,9 @@
 
 ## Current features
 
-- **Rendering single blocks**
+- **Chunk based rendering** - Only visible faces are drawn. 
 - **AABB Collision detection** - sliding along walls (collision doesn't necessary stop movement).
-- **Textures** – textures are loaded by the BlockTextureAtlas class. In the future this will be changed to single atlas texture for all blocks.
+- **Textures** – textures are loaded by the BlockTextureAtlas class.
 - **3D camera** – free movement around the scene.
 - **Shaders** - vertex and fragment shaders. Without lighting. 
 - **Input system** – handling by InputManager.
@@ -19,8 +19,7 @@
 - **Gravity** - ability to jump and fall down. Collision detection from below (while jumping), above (landing) and walking off the cliff.
 
 ## Future features
-- **Chunk based rendering**
-- **Rendering only visible block faces** - touching block faces are not rendered.
+- **Rendering only visible block faces on chunk borders**
 - **Lighting**
 - **Place and destroy blocks**
 - **Rendering only in front of camera** - add second camera to see blocks rendered (bind)
@@ -52,15 +51,21 @@
 
 ## Images
 
-<img src="resources/screenshots/16_02.png" alt="Block rendering" width="400"/>
+![](resources/screenshots/chunks1.png)
 
-<i>16.02.2026 – single block rendering with textures</i>
-
-<img src="resources/screenshots/16_02_wireframe.png" alt="Block rendering" width="400"/>
-
-<i>16.02.2026 – wireframe mode</i>
+<i>25.02.2026 – chunk rendering with textures</i>
 
 
 ![](resources/screenshots/gravity.gif)
 
 <i>17.02.2026 – gravity</i>
+
+
+<img src="resources/screenshots/16_02.png" alt="Block rendering" width="400"/>
+
+<i>16.02.2026 – single block rendering with textures</i>
+
+
+<img src="resources/screenshots/16_02_wireframe.png" alt="Block rendering" width="400"/>
+
+<i>16.02.2026 – wireframe mode</i>

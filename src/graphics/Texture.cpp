@@ -25,7 +25,7 @@ Texture::Texture(const char *path, TextureType type): path(path) {
 
 void Texture::loadTexture(const char *path) {
     stbi_set_flip_vertically_on_load(true);
-    int width, height, nrChannels;
+    int nrChannels;
     unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
 
     GLenum format = GL_RGBA;

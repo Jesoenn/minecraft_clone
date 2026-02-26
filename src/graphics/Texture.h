@@ -14,6 +14,7 @@ enum class TextureType {
 class Texture {
 public:
     unsigned int ID;
+    int width, height;
     TextureType type;   // texture_diffuse (normal texture), texture_specular (for lighting)
     std::string path;
 

@@ -9,6 +9,7 @@
 #include "InputManager.h"
 #include "Window.h"
 #include "../graphics/Renderer.h"
+#include "../world/chunks/ChunkManager.h"
 
 
 
@@ -16,7 +17,7 @@ class Application {
 public:
     Application(int width, int height, const std::string& title);
     void run();
-    // TODO: InputManager
+
 private:
     // Timing (FPS)
     float deltaTime, lastFrame;
@@ -25,6 +26,7 @@ private:
     std::shared_ptr<Renderer> renderer;
     std::shared_ptr<World> world;
     std::shared_ptr<InputManager> input;
+    std::shared_ptr<ChunkManager> chunkManager;
 
     // Window
     std::shared_ptr<Window> window;

@@ -35,7 +35,8 @@ add_executable(minecraft_clone main.cpp
         src/world/chunks/Chunk.cpp
         src/world/chunks/Chunk.h
         src/world/chunks/ChunkManager.cpp
-        src/world/chunks/ChunkManager.h)
+        src/world/chunks/ChunkManager.h
+        src/util/FaceDirection.h)
 
 # Add DLLs (libraries)
 target_link_libraries(minecraft_clone
