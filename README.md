@@ -9,6 +9,8 @@
 ## Current features
 
 - **Chunk based rendering** - Only visible faces are drawn. 
+    - Only visible faces on chunk borders are drawn. Each chunk has function from ChunkManager passed to it to check neighboring chunk isAir().
+    - Building mesh has to be initiated by hand ( .buildMesh() ).  
 - **AABB Collision detection** - sliding along walls (collision doesn't necessary stop movement). Collision is detected in 2 block radius from player origin. Chunk is being obtained for each x/z combination.
 - **Textures** – textures are loaded by the BlockTextureAtlas class.
 - **3D camera** – free movement around the scene.
@@ -19,11 +21,11 @@
 - **Gravity** - ability to jump and fall down. Collision detection from below (while jumping), above (landing) and walking off the cliff.
 
 ## Future features
-- **Rendering only visible block faces on chunk borders**
 - **Lighting**
 - **Place and destroy blocks**
 - **Rendering only in front of camera** - add second camera to see blocks rendered (bind)
 - **Random terrain generation**
+- **Rebuild neighbour chunks meshes after generating new chunks.**
 
 ## Known issues
 1. **Physics** - Moving window while in **physics mode** and **during jump** causes clipping through blocks.
@@ -50,6 +52,11 @@
 - **F2** – toggle physics
 
 ## Images
+
+![](resources/screenshots/27_02_multiple_chunks.png)
+
+<i>27.02.2026 – chunk rendering without chunk borders being rendered</i>
+
 
 ![](resources/screenshots/chunks1.png)
 

@@ -4,6 +4,7 @@
 
 #include "ChunkManager.h"
 
+#include <iostream>
 #include <stdexcept>
 
 ChunkManager::ChunkManager():
@@ -16,8 +17,12 @@ void ChunkManager::generateChunks() {
     for (int x = -START_CHUNKS_RADIUS; x <= START_CHUNKS_RADIUS; x++) {
         for (int z = -START_CHUNKS_RADIUS; z <= START_CHUNKS_RADIUS; z++) {
             glm::ivec2 chunkPos = {x*CHUNK_SIZE_X, z*CHUNK_SIZE_Z};
-            chunks.insert({{chunkPos.x, chunkPos.y}, Chunk(chunkPos.x, chunkPos.y, texAtlas, generateChunkContent(chunkPos))});
+            chunks.insert({{chunkPos.x, chunkPos.y}, Chunk(chunkPos.x, chunkPos.y, texAtlas, generateChunkContent(chunkPos), [this](int x, int y, int z) { return isGlobalBlockAir(x, y, z); })});
         }
+    }
+
+    for (auto& [pos, chunk] : chunks) {
+        chunk.buildMesh();
     }
 }
 
@@ -98,5 +103,18 @@ bool ChunkManager::chunkExists(glm::vec3 pos) {
 
 std::map<std::pair<int, int>, Chunk> & ChunkManager::getAllChunks() {
     return chunks;
+}
+
+bool ChunkManager::isGlobalBlockAir(int x, int y, int z) {
+    glm::vec3 pos = glm::vec3(x, y, z);
+    if (!chunkExists(pos))
+        return true;
+
+    Chunk& chunk = getChunk(pos);
+    int localX = x - chunk.getPosition().x;
+    int localZ = z - chunk.getPosition().y;
+    auto blocks = chunk.getBlocks();
+
+    return blocks[localX][y][localZ] == BlockType::AIR;
 }
 

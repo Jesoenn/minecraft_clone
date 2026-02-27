@@ -5,10 +5,11 @@
 #include "glad/glad.h"
 #include "Chunk.h"
 
-Chunk::Chunk(int posX, int posZ, BlockTextureAtlas& texAtlas, std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X> blocks):
-    posX(posX), posZ(posZ), blocks(blocks), texAtlas(texAtlas), needUpdate(true) {
+#include <utility>
+
+Chunk::Chunk(int posX, int posZ, BlockTextureAtlas& texAtlas, std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X> blocks, std::function<bool(int,int,int)> isGlobalAir):
+    posX(posX), posZ(posZ), blocks(blocks), texAtlas(texAtlas), needUpdate(true), isGlobalAir(std::move(isGlobalAir)) {
     setUp();
-    buildMesh();
 }
 
 void Chunk::buildMesh() {
@@ -96,10 +97,14 @@ std::array<std::array<std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_
 }
 
 bool Chunk::isAir(int x, int y, int z) {
-    return x < 0 || x >= CHUNK_SIZE_X ||
-           y < 0 || y >= CHUNK_SIZE_Y ||
-           z < 0 || z >= CHUNK_SIZE_Z ||
-           blocks[x][y][z] == BlockType::AIR;
+    if ( y < 0 || y >= CHUNK_SIZE_Y )
+        return true;
+
+    if (x < 0 || x >= CHUNK_SIZE_X || z < 0 || z >= CHUNK_SIZE_Z) {
+        return isGlobalAir(x + posX, y, z + posZ);
+    }
+
+    return blocks[x][y][z] == BlockType::AIR;
 }
 
 void Chunk::addFace(FaceDirection direction, int x, int y, int z, BlockType type) {
