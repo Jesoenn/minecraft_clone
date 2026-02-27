@@ -20,10 +20,6 @@ struct Vertex {
     glm::vec2 texCoords;    // Texture coordinates + offset based on block type
 };
 
-// TODO
-// #4 Collisions based on all chunks first
-// #5 Collisions based on nearby chunks
-
 class Chunk {
 public:
     Chunk(int posX, int posZ, BlockTextureAtlas& texAtlas, std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X> blocks);

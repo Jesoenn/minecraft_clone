@@ -120,6 +120,9 @@ bool World::checkCollision(const glm::vec3 newPos) {
     // #2 Check only closest blocks to player - radius like 3 maybe. Check performance
 
 
+    if (!chunkManager.chunkExists(player.getPosition()))
+        return false;
+
     Chunk& chunk = chunkManager.getChunk(player.getPosition());
     std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X> blocks = chunk.getBlocks();
 

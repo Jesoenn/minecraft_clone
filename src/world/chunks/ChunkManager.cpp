@@ -67,10 +67,28 @@ Chunk & ChunkManager::getChunk(glm::ivec2 pos) {
     }
 }
 
+bool ChunkManager::chunkExists(glm::ivec2 pos) {
+    try {
+        getChunk(pos);
+    } catch (std::out_of_range& e) {
+        return false;
+    }
+    return true;
+}
+
 Chunk & ChunkManager::getChunk(glm::vec3 pos) {
     // World position divide by chunk size, then floor down and multiply by chunk size -> (5, -2.5) is chunk (0, -16)
     glm::ivec2 chunkPos = glm::ivec2(std::floor(pos.x/CHUNK_SIZE_X)*CHUNK_SIZE_X, std::floor(pos.z/CHUNK_SIZE_Z)*CHUNK_SIZE_Z);
     return getChunk(chunkPos);
+}
+
+bool ChunkManager::chunkExists(glm::vec3 pos) {
+    try {
+        getChunk(pos);
+    } catch (std::out_of_range& e) {
+        return false;
+    }
+    return true;
 }
 
 std::map<std::pair<int, int>, Chunk> & ChunkManager::getAllChunks() {
