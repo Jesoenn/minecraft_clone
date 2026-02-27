@@ -113,46 +113,43 @@ void World::jumpPhysics(float deltaTime) {
 
 
 bool World::checkCollision(const glm::vec3 newPos) {
-    // TODO:
-    // #1 add chunks to check around chunk where player is currently.
-    //      - Take closest chunks. If chunk is non-existing chunk, then somehow skip(?)
-    //      - Add function in chunkManager bool chunkExists(pos) - so no error is thrown.
-    // #2 Check only closest blocks to player - radius like 3 maybe. Check performance
+    glm::vec3 collision_radius = glm::vec3(2);
+    glm::vec3 playerPos = player.getPosition();
+    glm::ivec3 minBlock = glm::floor(playerPos - collision_radius);
+    glm::ivec3 maxBlock = glm::floor(playerPos + collision_radius);
 
+    for (int x = minBlock.x; x <= maxBlock.x; x++) {
+        for (int z = minBlock.z; z <= maxBlock.z; z++) {
+            // Get chunk based on x and z
+            glm::vec3 blockPos(x, 0, z);
+            if (!chunkManager.chunkExists(blockPos))
+                continue;
+            Chunk& chunk = chunkManager.getChunk(blockPos);
 
-    if (!chunkManager.chunkExists(player.getPosition()))
-        return false;
+            for (int y = minBlock.y; y <= maxBlock.y; y++) {
+                blockPos.y = y;
 
-    Chunk& chunk = chunkManager.getChunk(player.getPosition());
-    std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X> blocks = chunk.getBlocks();
-
-    for (int x = 0; x < CHUNK_SIZE_X; x++) {
-        for (int y = 0; y < CHUNK_SIZE_Y; y++) {
-            for (int z = 0; z < CHUNK_SIZE_Z; z++) {
-                glm::vec3 blockPos = glm::vec3(chunk.getPosition().x + x, y, chunk.getPosition().y + z);
-
-                if ( blocks[x][y][z] == BlockType::AIR) {
+                // Position in chunk
+                glm::ivec3 localPos = glm::ivec3(x-chunk.getPosition().x, y, z-chunk.getPosition().y);
+                if ( localPos.y < 0 || localPos.y >= CHUNK_SIZE_Y )
                     continue;
-                }
 
-                float distance = glm::length(blockPos - player.getPosition());
-                if (distance > 3.8f) {
+                auto blocks = chunk.getBlocks();
+                if (blocks[localPos.x][localPos.y][localPos.z] == BlockType::AIR)
                     continue;
-                }
+
                 glm::vec3 playerSize = player.getSize();
-
                 // AABB collision check
                 // https://www.youtube.com/watch?v=59BTXB-kFNs
                 if ( newPos.x - playerSize.x/2 < blockPos.x + 0.5f && newPos.x + playerSize.x/2 > blockPos.x - 0.5f &&
                      newPos.y - playerSize.y/2 < blockPos.y + 0.5f && newPos.y + playerSize.y/2 > blockPos.y - 0.5f &&
                      newPos.z - playerSize.z/2 < blockPos.z + 0.5f && newPos.z + playerSize.z/2 > blockPos.z - 0.5f) {
-
                     return true;
                 }
+
             }
         }
     }
-
     return false;
 }
 

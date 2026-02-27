@@ -9,7 +9,7 @@
 ## Current features
 
 - **Chunk based rendering** - Only visible faces are drawn. 
-- **AABB Collision detection** - sliding along walls (collision doesn't necessary stop movement).
+- **AABB Collision detection** - sliding along walls (collision doesn't necessary stop movement). Collision is detected in 2 block radius from player origin. Chunk is being obtained for each x/z combination.
 - **Textures** – textures are loaded by the BlockTextureAtlas class.
 - **3D camera** – free movement around the scene.
 - **Shaders** - vertex and fragment shaders. Without lighting. 

@@ -33,7 +33,7 @@ std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK
                     blocks[x][y][z] = BlockType::AIR;
                 } else if (y < 11) {
                     blocks[x][y][z] = BlockType::STONE;
-                } else if (y == 11 || y == 12) {
+                } else if (y == 11 || y == 12 || y==15) {
                     blocks[x][y][z] = BlockType::AIR;
                 } else {
                     blocks[x][y][z] = BlockType::GRASS_BLOCK;
@@ -54,6 +54,11 @@ std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK
     blocks[4][13][4] = BlockType::AIR;
     blocks[4][14][4] = BlockType::AIR;
     blocks[4][15][4] = BlockType::AIR;
+
+    for (int z = 0; z < CHUNK_SIZE_Z; z++) {
+        if (z%2 == 0)
+            blocks[0][15][z] = BlockType::STONE;
+    }
 
     return blocks;
 }

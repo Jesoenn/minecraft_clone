@@ -10,7 +10,7 @@
 #include "Chunk.h"
 #include "../../graphics/BlockTextureAtlas.h"
 
-const int START_CHUNKS_RADIUS = 0; // Number of chunks generated around spawn point at the start of the game.
+const int START_CHUNKS_RADIUS = 5; // Number of chunks generated around spawn point at the start of the game.
 
 class ChunkManager {
 public:
