@@ -2,6 +2,9 @@
 
 #include "src/core/Application.h"
 
+// TODO
+// #3 ChunkManager - when setting new block after destroyin make sure to update neighbouring chunk!!
+// #2 Add block placing
 
 int main() {
     std::cout<<"SHORTCUTS\n"

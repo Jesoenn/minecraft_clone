@@ -26,6 +26,8 @@ public:
     void updatePhysics(float deltaTime);
     void togglePhysics();
 
+    void destroyBlock();
+
     //Setters
 
     //Getters

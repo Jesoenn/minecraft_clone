@@ -18,7 +18,6 @@ void World::updatePhysics(const float deltaTime) {
 }
 
 void World::processMovement(CameraMovement direction, float deltaTime) {
-    //TODO: CHECK COLLISIONS BY CHUNK
     if (!physicsEnabled) {
         camera.processInput(direction, deltaTime);
 
@@ -69,6 +68,24 @@ void World::processMovement(CameraMovement direction, float deltaTime) {
     camera.position.x = currentPos.x;
     camera.position.z = currentPos.z;
     camera.position.y = currentPos.y + player.getEyeHeight() - player.getHeight() / 2.0f;
+}
+
+void World::destroyBlock() {
+    glm::vec3 rayOrigin = camera.position;
+    glm::vec3 rayDir = camera.front;
+    float maxDist = 4.5f;
+    float step = 0.1f;
+
+    for (float dist = 0.f; dist < maxDist; dist += step) {
+        glm::vec3 pos = rayOrigin + rayDir * dist;
+
+        glm::ivec3 blockPos = glm::round(pos);
+
+        if (!chunkManager.isGlobalBlockAir(blockPos.x, blockPos.y, blockPos.z)) {
+            chunkManager.setGlobalBlock(glm::ivec3(blockPos), BlockType::AIR);
+            break;
+        }
+    }
 }
 
 void World::jumpPhysics(float deltaTime) {

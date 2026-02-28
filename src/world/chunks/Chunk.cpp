@@ -13,6 +13,7 @@ Chunk::Chunk(int posX, int posZ, BlockTextureAtlas& texAtlas, std::array<std::ar
 }
 
 void Chunk::buildMesh() {
+    verticesMesh.clear();
     for (int x = 0; x<CHUNK_SIZE_X; x++) {
         for (int y = 0; y<CHUNK_SIZE_Y; y++) {
             for (int z = 0; z<CHUNK_SIZE_Z; z++) {

@@ -27,6 +27,7 @@ public:
 
     std::map<std::pair<int, int>, Chunk>& getAllChunks();
     bool isGlobalBlockAir(int x, int y, int z);
+    void setGlobalBlock(glm::ivec3 pos, BlockType block);
 
 private:
     std::map<std::pair<int, int>, Chunk> chunks;

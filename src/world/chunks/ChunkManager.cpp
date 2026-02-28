@@ -115,6 +115,36 @@ bool ChunkManager::isGlobalBlockAir(int x, int y, int z) {
     int localZ = z - chunk.getPosition().y;
     auto blocks = chunk.getBlocks();
 
+    if (y >= CHUNK_SIZE_Y || y < 0) {
+        return true;
+    }
+
     return blocks[localX][y][localZ] == BlockType::AIR;
+}
+
+void ChunkManager::setGlobalBlock(glm::ivec3 pos, BlockType block) {
+    glm::vec3 fPos = pos;
+
+    if (!chunkExists(fPos) || pos.y >= CHUNK_SIZE_Y || pos.y < 0)
+        return;
+
+    Chunk& chunk = getChunk(fPos);
+    int localX = pos.x - chunk.getPosition().x;
+    int localZ = pos.z - chunk.getPosition().y;
+
+    chunk.setBlock(glm::ivec3(localX, pos.y, localZ), block);
+    chunk.buildMesh();
+
+    // Build mesh of neighboring chunks if block was destroyed on chunk edge
+    if (localX == CHUNK_SIZE_X-1 || localX == 0) {
+        glm::vec3 neighborPos = glm::vec3(fPos.x - ((localX == 0) ? 1.f : -1.f), fPos.y, fPos.z);
+        if (chunkExists(neighborPos))
+            getChunk(neighborPos).buildMesh();
+    }
+    if (localZ == CHUNK_SIZE_Z-1 || localZ == 0) {
+        glm::vec3 neighborPos = glm::vec3(fPos.x, fPos.y, fPos.z - ((localZ == 0) ? 1.f : -1.f));
+        if (chunkExists(neighborPos))
+            getChunk(neighborPos).buildMesh();
+    }
 }
 

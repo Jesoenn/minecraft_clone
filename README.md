@@ -10,7 +10,11 @@
 
 - **Chunk based rendering** - Only visible faces are drawn. 
     - Only visible faces on chunk borders are drawn. Each chunk has function from ChunkManager passed to it to check neighboring chunk isAir().
-    - Building mesh has to be initiated by hand ( .buildMesh() ).  
+    - Building mesh has to be initiated by hand ( .buildMesh() ).
+- **Destroying blocks**
+  - Finding block is based on camera front vector and casting ray.
+  - Chunk mesh gets rebuilt after each block destroyed.
+  - If destroyed block is on chunk border, neighbor's mesh is also rebuilt.
 - **AABB Collision detection** - sliding along walls (collision doesn't necessary stop movement). Collision is detected in 2 block radius from player origin. Chunk is being obtained for each x/z combination.
 - **Textures** – textures are loaded by the BlockTextureAtlas class.
 - **3D camera** – free movement around the scene.
