@@ -30,6 +30,25 @@ std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK
     std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X> blocks = {};
 
     for (int x = 0; x < CHUNK_SIZE_X; x++) {
+        for (int z = 0; z < CHUNK_SIZE_Z; z++) {
+            glm::vec2 tmp = glm::vec2(x+pos.x, z+pos.y);
+
+            int maxY = 6+3*(std::sin(1.f/5.f*tmp.x)+std::cos(1.f/5.f*tmp.y));
+
+            blocks[x][maxY][z] = BlockType::GRASS_BLOCK;
+
+            for (int y = 0; y < maxY-1; y++) {
+                blocks[x][y][z] = BlockType::STONE;
+            }
+            if (maxY-1 >= 0)
+                blocks[x][maxY-1][z] = BlockType::DIRT;
+        }
+    }
+
+    return blocks;
+
+
+    for (int x = 0; x < CHUNK_SIZE_X; x++) {
         for (int y = 0; y < CHUNK_SIZE_Y; y++) {
             for (int z = 0; z < CHUNK_SIZE_Z; z++) {
                 if (y < 6) {

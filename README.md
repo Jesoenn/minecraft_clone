@@ -1,6 +1,6 @@
 # Minecraft Clone
 
-#### Date: 25.02.2026
+#### Date: 28.02.2026
 
 ## Description
 
@@ -15,6 +15,9 @@
   - Finding block is based on camera front vector and casting ray.
   - Chunk mesh gets rebuilt after each block destroyed.
   - If destroyed block is on chunk border, neighbor's mesh is also rebuilt.
+- **Terrain generation**
+  - Spawn player right above the ground.
+  - Simple terrain generation based on cos and sin functions.
 - **AABB Collision detection** - sliding along walls (collision doesn't necessary stop movement). Collision is detected in 2 block radius from player origin. Chunk is being obtained for each x/z combination.
 - **Textures** – textures are loaded by the BlockTextureAtlas class.
 - **3D camera** – free movement around the scene.

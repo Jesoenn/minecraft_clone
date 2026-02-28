@@ -7,6 +7,25 @@
 #include <iostream>
 
 World::World(ChunkManager& chunkManager): player(0.0f), chunkManager(chunkManager), physicsEnabled(false) {
+    setUp();
+}
+
+void World::setUp() {
+    //Set player location
+    if (!chunkManager.chunkExists(player.getPosition())) {
+        std::cout<<"WORLD::SETUP: Player spawn point is in non existing chunk\n";
+        return;
+    }
+    auto& blocks = chunkManager.getChunk(player.getPosition()).getBlocks();
+    for (int y = CHUNK_SIZE_Y-1; y >=0; y--) {
+        if (blocks[0][y][0] != BlockType::AIR) {
+            // Increase player y position from 0 to above ground
+            glm::vec3 yBoost = glm::vec3(0.0f, y+3, 0.0f);
+            player.setPosition(player.getPosition()+yBoost);
+            camera.position += yBoost;
+            return;
+        }
+    }
 }
 
 void World::updatePhysics(const float deltaTime) {
@@ -151,7 +170,7 @@ bool World::checkCollision(const glm::vec3 newPos) {
                 if ( localPos.y < 0 || localPos.y >= CHUNK_SIZE_Y )
                     continue;
 
-                auto blocks = chunk.getBlocks();
+                auto& blocks = chunk.getBlocks();
                 if (blocks[localPos.x][localPos.y][localPos.z] == BlockType::AIR)
                     continue;
 

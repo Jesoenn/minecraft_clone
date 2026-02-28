@@ -93,7 +93,7 @@ std::vector<Vertex> & Chunk::getMesh() {
     return verticesMesh;
 }
 
-std::array<std::array<std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X> Chunk::getBlocks() {
+std::array<std::array<std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X>& Chunk::getBlocks() {
     return blocks;
 }
 

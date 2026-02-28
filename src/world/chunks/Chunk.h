@@ -11,7 +11,7 @@
 #include <array>
 
 const int CHUNK_SIZE_X = 16;
-const int CHUNK_SIZE_Y = 16;
+const int CHUNK_SIZE_Y = 256;
 const int CHUNK_SIZE_Z = 16;
 
 struct Vertex {
@@ -36,7 +36,7 @@ public:
     BlockType getBlock(glm::ivec3 pos);
     glm::ivec2 getPosition();
     std::vector<Vertex>& getMesh();
-    std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X> getBlocks();
+    std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X>& getBlocks();
 
 private:
     int posX, posZ;
