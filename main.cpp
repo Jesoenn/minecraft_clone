@@ -3,8 +3,11 @@
 #include "src/core/Application.h"
 
 // TODO
-// #3 ChunkManager - when setting new block after destroyin make sure to update neighbouring chunk!!
 // #2 Add block placing
+// #3 Perlin noise
+// #4 Infinite terrain generation - adding and removing chunks
+// #5 Lighting
+// FINISHED
 
 int main() {
     std::cout<<"SHORTCUTS\n"

@@ -17,6 +17,7 @@ Renderer::Renderer(Camera& camera, World& world, glm::vec2 windowSize, ChunkMana
     glEnable(GL_CULL_FACE);
 
     setUpShaders();
+    setUpCrosshair();
     setUpCube();
 }
 
@@ -39,6 +40,23 @@ void Renderer::render() {
         chunk.render();
     }
 
+    renderCrosshair();
+}
+
+void Renderer::renderCrosshair() {
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+
+    glm::vec2 size = glm::vec2(windowSize.x, windowSize.y);
+    crosshairShader->use();
+    crosshairShader->setVec2("windowSize", size);
+
+    glBindVertexArray(crosshairVAO);
+    glDrawArrays(GL_LINES, 0, 4);
+    glBindVertexArray(0);
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 }
 
 void Renderer::toggleWireframe() {
@@ -57,6 +75,7 @@ void Renderer::setWindowSize(glm::vec2 windowSize) {
 
 void Renderer::setUpShaders() {
     cubeShader = std::make_shared<Shader>("../src/graphics/shaders/cube.vert", "../src/graphics/shaders/cube.frag");
+    crosshairShader = std::make_shared<Shader>("../src/graphics/shaders/crosshair.vert", "../src/graphics/shaders/crosshair.frag");
     chunkShader = std::make_shared<Shader>("../src/graphics/shaders/chunk.vert", "../src/graphics/shaders/chunk.frag");
 }
 
@@ -134,4 +153,23 @@ void Renderer::setUpCube() {
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     // Unbind VAO
     glBindVertexArray(0);
+}
+
+void Renderer::setUpCrosshair() {
+    // Negative values lower to make sure the pixels are equal on each side
+    float crosshairVertices[] = {
+        0.0f, 10.0f,
+        0.0f, -12.0f,
+        10.0f, 0.0f,
+        -12.0f, 0.0f,
+    };
+
+    glGenVertexArrays(1, &crosshairVAO);
+    glGenBuffers(1, &crosshairVBO);
+
+    glBindVertexArray(crosshairVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, crosshairVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(crosshairVertices), crosshairVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 }

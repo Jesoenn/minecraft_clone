@@ -21,11 +21,13 @@ public:
     Renderer(Camera& camera, World& world, glm::vec2 windowSize, ChunkManager& chunkManager);
 
     void render();
+    void renderCrosshair();
     void toggleWireframe();
 
     // Set up
     void setUpShaders();
     void setUpCube();
+    void setUpCrosshair();
 
     // Setters
     void setWindowSize(glm::vec2 windowSize);
@@ -40,8 +42,8 @@ private:
     glm::vec2 windowSize;
 
     // Visual
-    GLuint cubeVAO, cubeVBO, cubeEBO;
-    std::shared_ptr<Shader> cubeShader;
+    GLuint cubeVAO, cubeVBO, cubeEBO, crosshairVAO, crosshairVBO;
+    std::shared_ptr<Shader> cubeShader, crosshairShader;
     std::shared_ptr<Shader> chunkShader;
 };
 
