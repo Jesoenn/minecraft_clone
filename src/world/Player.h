@@ -6,6 +6,8 @@
 #define PLAYER_H
 #include <glm/vec3.hpp>
 
+#include "Block.h"
+
 #define PLAYER_WIDTH 0.6f;
 #define PLAYER_HEIGHT 1.8125f;
 #define PLAYER_DEPTH 0.6f;
@@ -16,12 +18,15 @@ public:
     explicit Player(float cameraY);
 
     void setUpHitBox(float cameraY);
+    void printBlockInHand();
+
     // Setters
     void setPosition(const glm::vec3& newPosition);
     void setPosition(float x, float y, float z);
     void setVelocity(const glm::vec3& newVelocity);
     void setVelocity(float x, float y, float z);
     void setOnGround(bool onGround);
+    void setBlockInHand(BlockType blockInHand);
 
     // Getters
     glm::vec3 getPosition() const;
@@ -32,13 +37,14 @@ public:
     float getDepth() const;
     float getEyeHeight() const;
     bool isOnGround() const;
+    BlockType getBlockInHand() const;
 
 
 private:
     glm::vec3 position, velocity;
     bool onGround;
     float width, height, depth, eyeHeight;
-
+    BlockType blockInHand;
 };
 
 #endif //PLAYER_H

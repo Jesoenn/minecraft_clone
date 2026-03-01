@@ -17,7 +17,7 @@ constexpr float DEFAULT_FOV = 45.f;
 constexpr float DEFAULT_PITCH = 0.f;
 constexpr float DEFAULT_YAW = -90.f;
 constexpr float DEFAULT_MOVEMENT_SPEED = 6.0f;
-constexpr float DEFAULT_FLYING_SPEED = 15.0f;
+constexpr float DEFAULT_FLYING_SPEED = 30.0f;
 constexpr float DEFAULT_MOUSE_SENSITIVITY = 0.1f;
 
 enum CameraMovement { FORWARD, BACKWARD, LEFT, RIGHT, JUMP };

@@ -6,6 +6,7 @@
 #define WORLD_H
 #include "../graphics/Camera.h"
 #include "../world/Block.h"
+#include "../world/GlobalLight.h"
 #include "../world/Player.h"
 #include "../world/chunks/ChunkManager.h"
 
@@ -27,6 +28,8 @@ public:
     void togglePhysics();
 
     void destroyBlock();
+    void placeBlock();
+    void cycleBlockInHand();
 
     //Setters
 
@@ -35,10 +38,14 @@ public:
     std::vector<glm::vec3> getBlockPositions() const;
     BlockType getBlockType(int blockId) const;
     std::vector<Block> getBlocks() const;
+    glm::vec3 getGlobalLightColor() const;
+    glm::vec3 getGlobalLightDir() const;
 
 private:
     Player player;
     Camera camera;
+
+    GlobalLight globalLight;
 
     ChunkManager& chunkManager;
 

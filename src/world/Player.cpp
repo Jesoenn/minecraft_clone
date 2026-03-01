@@ -4,9 +4,11 @@
 
 #include "Player.h"
 
+#include <iostream>
+
 Player::Player(float cameraY):
     position(glm::vec3(0)), velocity(glm::vec3(0)), onGround(false),
-    width(0), height(0), depth(0), eyeHeight(0) {
+    width(0), height(0), depth(0), eyeHeight(0), blockInHand(BlockType::AIR) {
     setUpHitBox(cameraY);
 }
 
@@ -18,6 +20,18 @@ void Player::setUpHitBox(float cameraY) {
 
     // Calc hitBox position based on eye height
     position = glm::vec3(0, cameraY - eyeHeight + height/2, 0);
+}
+
+void Player::printBlockInHand() {
+    std::string blockName;
+    switch (blockInHand) {
+        case BlockType::AIR: blockName = "AIR"; break;
+        case BlockType::DIRT: blockName = "DIRT"; break;
+        case BlockType::GRASS_BLOCK: blockName = "GRASS_BLOCK"; break;
+        case BlockType::STONE: blockName = "STONE"; break;
+        default: blockName = "UNKNOWN"; break;
+    }
+    std::cout<<"Block in hand: "<<blockName<<"\n";
 }
 
 void Player::setPosition(const glm::vec3 &newPosition) {
@@ -38,6 +52,10 @@ void Player::setVelocity(float x, float y, float z) {
 
 void Player::setOnGround(bool onGround) {
     this->onGround = onGround;
+}
+
+void Player::setBlockInHand(BlockType blockInHand) {
+    this->blockInHand = blockInHand;
 }
 
 glm::vec3 Player::getVelocity() const {
@@ -71,4 +89,8 @@ float Player::getEyeHeight() const {
 
 bool Player::isOnGround() const {
     return onGround;
+}
+
+BlockType Player::getBlockInHand() const {
+    return blockInHand;
 }

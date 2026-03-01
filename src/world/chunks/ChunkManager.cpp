@@ -3,7 +3,8 @@
 //
 
 #include "ChunkManager.h"
-
+#define STB_PERLIN_IMPLEMENTATION
+#include "stb_perlin.h"
 #include <iostream>
 #include <stdexcept>
 
@@ -31,57 +32,28 @@ std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK
 
     for (int x = 0; x < CHUNK_SIZE_X; x++) {
         for (int z = 0; z < CHUNK_SIZE_Z; z++) {
-            glm::vec2 tmp = glm::vec2(x+pos.x, z+pos.y);
+            float nx = (x + pos.x) * 0.02f;
+            float nz = (z + pos.y) * 0.02f;
+            float height = 64.0f * (stb_perlin_noise3(nx, 0.0f, nz, 0, 0, 0) * 0.5f + 0.5f) + 60.0f;
 
-            int maxY = 6+3*(std::sin(1.f/5.f*tmp.x)+std::cos(1.f/5.f*tmp.y));
+            for (int y = 0; y < CHUNK_SIZE_Y; y++) {
+                float ny = y * 0.01f;
+                float cave = stb_perlin_noise3(nx, ny, nz, 0, 0, 0);
 
-            blocks[x][maxY][z] = BlockType::GRASS_BLOCK;
-
-            for (int y = 0; y < maxY-1; y++) {
-                blocks[x][y][z] = BlockType::STONE;
-            }
-            if (maxY-1 >= 0)
-                blocks[x][maxY-1][z] = BlockType::DIRT;
-        }
-    }
-
-    return blocks;
-
-
-    for (int x = 0; x < CHUNK_SIZE_X; x++) {
-        for (int y = 0; y < CHUNK_SIZE_Y; y++) {
-            for (int z = 0; z < CHUNK_SIZE_Z; z++) {
-                if (y < 6) {
-                    blocks[x][y][z] = BlockType::DIRT;
-                } else if (y == 6 || y == 7) {
-                    blocks[x][y][z] = BlockType::AIR;
-                } else if (y < 11) {
-                    blocks[x][y][z] = BlockType::STONE;
-                } else if (y == 11 || y == 12 || y==15) {
-                    blocks[x][y][z] = BlockType::AIR;
+                if (y < height) {
+                    if (cave > 0.4f)
+                        blocks[x][y][z] = BlockType::AIR;
+                    else if (y == static_cast<int>(height))
+                        blocks[x][y][z] = BlockType::GRASS_BLOCK;
+                    else if (y > static_cast<int>(height) - 4)
+                        blocks[x][y][z] = BlockType::DIRT;
+                    else
+                        blocks[x][y][z] = BlockType::STONE;
                 } else {
-                    blocks[x][y][z] = BlockType::GRASS_BLOCK;
+                    blocks[x][y][z] = BlockType::AIR;
                 }
             }
         }
-    }
-
-    blocks[5][13][5] = BlockType::AIR;
-    blocks[5][14][5] = BlockType::AIR;
-    blocks[5][15][5] = BlockType::AIR;
-    blocks[5][13][4] = BlockType::AIR;
-    blocks[5][14][4] = BlockType::AIR;
-    blocks[5][15][4] = BlockType::AIR;
-    blocks[4][13][5] = BlockType::AIR;
-    blocks[4][14][5] = BlockType::AIR;
-    blocks[4][15][5] = BlockType::AIR;
-    blocks[4][13][4] = BlockType::AIR;
-    blocks[4][14][4] = BlockType::AIR;
-    blocks[4][15][4] = BlockType::AIR;
-
-    for (int z = 0; z < CHUNK_SIZE_Z; z++) {
-        if (z%2 == 0)
-            blocks[0][15][z] = BlockType::STONE;
     }
 
     return blocks;

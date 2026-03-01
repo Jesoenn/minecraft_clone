@@ -33,6 +33,10 @@ void Renderer::render() {
     chunkShader->setMat4("model", model);
     chunkShader->setInt("textureAtlas", 0);
 
+    //TODO TMP GLOBAL LIGHTING
+    chunkShader->setVec3("lightDir", world.getGlobalLightDir());
+    chunkShader->setVec3("lightColor", world.getGlobalLightColor());
+
     std::map<std::pair<int, int>, Chunk>& chunks = chunkManager.getAllChunks();
     for (auto& [pos, chunk] : chunks) {
         glm::vec3 chunkPos = glm::vec3(pos.first, 0, pos.second);

@@ -5,6 +5,7 @@
 #include "World.h"
 
 #include <iostream>
+#include <GLFW/glfw3.h>
 
 World::World(ChunkManager& chunkManager): player(0.0f), chunkManager(chunkManager), physicsEnabled(false) {
     setUp();
@@ -32,7 +33,6 @@ void World::updatePhysics(const float deltaTime) {
     if (!physicsEnabled) {
         return;
     }
-
     jumpPhysics(deltaTime);
 }
 
@@ -97,7 +97,6 @@ void World::destroyBlock() {
 
     for (float dist = 0.f; dist < maxDist; dist += step) {
         glm::vec3 pos = rayOrigin + rayDir * dist;
-
         glm::ivec3 blockPos = glm::round(pos);
 
         if (!chunkManager.isGlobalBlockAir(blockPos.x, blockPos.y, blockPos.z)) {
@@ -105,6 +104,49 @@ void World::destroyBlock() {
             break;
         }
     }
+}
+
+void World::placeBlock() {
+    glm::vec3 rayOrigin = camera.position;
+    glm::vec3 rayDir = camera.front;
+    float maxDist = 5.f;
+    float step = 0.1f;
+
+    glm::ivec3 lastAirBlock(0, -1, 0); // Initialize with invalid position
+    for (float dist = 0.f; dist < maxDist; dist += step) {
+        glm::vec3 pos = rayOrigin + rayDir * dist;
+        glm::ivec3 blockPos = glm::round(pos);
+
+        if (chunkManager.isGlobalBlockAir(blockPos.x, blockPos.y, blockPos.z)) {
+            lastAirBlock = blockPos;
+        } else {
+
+            if (lastAirBlock.y != -1) {
+                glm::vec3 playerPos = player.getPosition();
+                glm::ivec3 playerBlockPos = glm::ivec3(static_cast<int>(playerPos.x), static_cast<int>(playerPos.y), static_cast<int>(playerPos.z));
+
+                if (playerBlockPos == lastAirBlock || playerBlockPos + glm::ivec3(0,1,0) == lastAirBlock) {
+                    return;
+                }
+
+                chunkManager.setGlobalBlock(lastAirBlock, player.getBlockInHand());
+            }
+            break;
+        }
+    }
+}
+
+void World::cycleBlockInHand() {
+    BlockType blockType = player.getBlockInHand();
+    int blockTypeInt = static_cast<int>(blockType);
+    if (blockType == BlockType::STONE) {
+        blockTypeInt = 0;
+    } else {
+        blockTypeInt++;
+    }
+
+    player.setBlockInHand(static_cast<BlockType>(blockTypeInt));
+    player.printBlockInHand();
 }
 
 void World::jumpPhysics(float deltaTime) {
@@ -221,4 +263,12 @@ void World::togglePhysics() {
 
 Camera & World::getCamera() {
     return camera;
+}
+
+glm::vec3 World::getGlobalLightColor() const {
+    return globalLight.color;
+}
+
+glm::vec3 World::getGlobalLightDir() const {
+    return globalLight.dir;
 }

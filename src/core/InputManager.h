@@ -27,7 +27,7 @@ private:
     Window& window;
     Renderer& renderer;
 
-    bool lockedCursor, tabPressed, f1Pressed, f2Pressed, lmbPressed;
+    bool lockedCursor, tabPressed, f1Pressed, f2Pressed, lmbPressed, rmbPressed, rightArrowPressed;
 };
 
 

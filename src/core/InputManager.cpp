@@ -11,7 +11,7 @@ InputManager::InputManager(World &world, Window &window, Renderer &renderer):
     world(world), window(window), renderer(renderer),
     lockedCursor(true),
     tabPressed(false), f1Pressed(false), f2Pressed(false),
-    lmbPressed(false){}
+    lmbPressed(false), rmbPressed(false), rightArrowPressed(false){}
 
 void InputManager::mouseCallback(double xPosIn, double yPosIn) {
     float xPos = static_cast<float>(xPosIn);
@@ -63,6 +63,23 @@ void InputManager::processInput(float deltaTime) {
         world.destroyBlock();
     } else if (lmbState == GLFW_RELEASE && lmbPressed) {
         lmbPressed = false;
+    }
+
+    int rightArrowState = glfwGetKey(window, GLFW_KEY_RIGHT);
+    if (rightArrowState == GLFW_PRESS && !rightArrowPressed) {
+        rightArrowPressed = true;
+        world.cycleBlockInHand();
+    } else if (rightArrowState == GLFW_RELEASE && rightArrowPressed) {
+        rightArrowPressed = false;
+    }
+
+    // Placing blocks
+    int rmbState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2);
+    if (rmbState == GLFW_PRESS && !rmbPressed) {
+        rmbPressed = true;
+        world.placeBlock();
+    } else if (rmbState == GLFW_RELEASE && rmbPressed) {
+        rmbPressed = false;
     }
 
     // Wireframe toggle
