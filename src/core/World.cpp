@@ -140,7 +140,7 @@ void World::cycleBlockInHand() {
     BlockType blockType = player.getBlockInHand();
     int blockTypeInt = static_cast<int>(blockType);
     if (blockType == BlockType::STONE) {
-        blockTypeInt = 0;
+        blockTypeInt = 1;
     } else {
         blockTypeInt++;
     }

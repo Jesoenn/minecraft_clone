@@ -8,7 +8,7 @@
 
 Player::Player(float cameraY):
     position(glm::vec3(0)), velocity(glm::vec3(0)), onGround(false),
-    width(0), height(0), depth(0), eyeHeight(0), blockInHand(BlockType::AIR) {
+    width(0), height(0), depth(0), eyeHeight(0), blockInHand(BlockType::DIRT) {
     setUpHitBox(cameraY);
 }
 

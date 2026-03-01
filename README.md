@@ -62,6 +62,7 @@
 - **TAB** – toggle mouse cursor
 - **F1** – toggle wireframe mode
 - **F2** – toggle physics
+- **Right arrow** - change block in hand (printed in terminal)
 
 ## Images
 ![](resources/screenshots/terrain.png)
