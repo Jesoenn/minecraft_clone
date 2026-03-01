@@ -32,6 +32,7 @@ public:
 private:
     std::map<std::pair<int, int>, Chunk> chunks;
     BlockTextureAtlas texAtlas;
+    float noiseSeed;
 
     std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK_SIZE_X> generateChunkContent(glm::ivec2 pos);
 };

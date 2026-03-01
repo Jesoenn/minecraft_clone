@@ -47,7 +47,7 @@ void Renderer::render() {
     renderCrosshair();
 }
 
-void Renderer::renderCrosshair() {
+void Renderer::renderCrosshair() const {
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
 

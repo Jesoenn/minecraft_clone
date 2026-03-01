@@ -7,9 +7,16 @@
 #include "stb_perlin.h"
 #include <iostream>
 #include <stdexcept>
+#include <random>
 
 ChunkManager::ChunkManager():
     texAtlas("../resources/texture_atlas.png") {
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dis(0.0f, 10000.0f);
+    noiseSeed = dis(gen);
+
     generateChunks();
 }
 
@@ -32,12 +39,12 @@ std::array<std::array< std::array<BlockType, CHUNK_SIZE_Z>, CHUNK_SIZE_Y>, CHUNK
 
     for (int x = 0; x < CHUNK_SIZE_X; x++) {
         for (int z = 0; z < CHUNK_SIZE_Z; z++) {
-            float nx = (x + pos.x) * 0.02f;
-            float nz = (z + pos.y) * 0.02f;
+            float nx = (x + pos.x) * 0.02f + noiseSeed;
+            float nz = (z + pos.y) * 0.02f + noiseSeed;
             float height = 64.0f * (stb_perlin_noise3(nx, 0.0f, nz, 0, 0, 0) * 0.5f + 0.5f) + 60.0f;
 
             for (int y = 0; y < CHUNK_SIZE_Y; y++) {
-                float ny = y * 0.01f;
+                float ny = y * 0.01f + noiseSeed;
                 float cave = stb_perlin_noise3(nx, ny, nz, 0, 0, 0);
 
                 if (y < height) {

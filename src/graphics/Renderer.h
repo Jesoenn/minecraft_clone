@@ -21,7 +21,7 @@ public:
     Renderer(Camera& camera, World& world, glm::vec2 windowSize, ChunkManager& chunkManager);
 
     void render();
-    void renderCrosshair();
+    void renderCrosshair() const;
     void toggleWireframe();
 
     // Set up
